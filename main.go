@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	Router.Router()
+	Controller.Router()
 }
