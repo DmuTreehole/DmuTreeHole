@@ -5,28 +5,29 @@ Create Database Server;
 
 Use Server;
 drop table Logs;
-drop table UserInfo;
+drop table Userprofile;
 drop table User;
 Create Table User(
     User_Id bigint primary key Auto_Increment,
     User_Name nvarchar(255) Not Null Unique,
-    User_Password nchar(255) Not Null
+    User_Password nchar(255) Not Null,
+    User_Email nchar(255) Not Null
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 Create Table Logs(
     User_Id bigint,
     Foreign key (User_Id) References User(User_Id),
-    log_num bigint primary key Auto_Increment,
-    log_time datetime Not Null,
-    log_ipInfo varchar(255)
+    Log_Num bigint primary key Auto_Increment,
+    Log_Time datetime Not Null,
+    Log_IpInfo varchar(255)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-Create Table UserInfo(
-    UserInfo_Id bigint Primary Key Auto_Increment,
-    User_id bigint,
+Create Table Userprofile(
+    User_Id bigint Primary Key Auto_Increment,
     foreign key (User_Id) References User(User_Id),
-    User_Email varchar(20),
-    User_Phone char(11)
+    User_NickName nvarchar(255),
+    User_Sex boolean, -- true = 男
+    User_Addr nvarchar(255)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 grant Select,Update,insert On Logs To TreeHole;
 grant Select,Update,insert On User To TreeHole;
-grant Select,Update,insert On UserInfo To TreeHole;
+grant Select,Update,insert On Userprofile To TreeHole;
 

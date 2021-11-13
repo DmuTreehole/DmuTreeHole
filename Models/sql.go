@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 	"os"
 )
 
@@ -23,37 +24,47 @@ func OpenDataBase() {
 		os.Exit(-1)
 	}
 }
-func Register(User User) bool {
-	stmt, err := DB.Prepare("Insert User Set User_Name=?,User_Password=?")
+func Register(User User) (int64, bool) {
+	hash, _ := bcrypt.GenerateFromPassword([]byte(User.UserPassword), bcrypt.DefaultCost)
+	User.UserPassword = string(hash)
+	template := "Insert User Set User_Name=?,User_Password=?,User_Email=?"
+	stmt, err := DB.Prepare(template)
 	if err != nil {
-		return false
+		return -1, false
 	}
-	e, err := stmt.Exec(User.UserName, User.UserPassword)
+	result, err := stmt.Exec(User.UserName, User.UserPassword, User.UserEmail)
 	if err != nil {
-		return false
+		return -1, false
 	}
-	template := "Insert UserInfo Set User_Id=?,User_Phone=?,User_Email=?"
-	stmt1, err := DB.Prepare(template)
-	if err != nil {
-		return false
-	}
-	User.UserId, _ = e.LastInsertId()
-	_, err = stmt1.Exec(User.UserId, User.UserPhone, User.UserEmail)
-	if err != nil {
-		return false
-	}
-	return true
+	id, _ := result.LastInsertId()
+	return id, true
 }
-func Login(UserName string) (string, bool) {
-	template := `Select User_Password From User Where User_Name = ?`
-	result, err := DB.Query(template, UserName)
+func Login(UserName string) (int64, string, bool) {
+	template := "Select User_Id,User_Password From User Where User_Name=?"
+	rows, err := DB.Query(template, UserName)
 	if err != nil {
-		return "SQL Err!", false
+		return -1, "SQL Err!", false
 	}
-	password := ""
-	err = result.Scan(password)
+	var password string
+	var Id int64
+	rows.Next()
+	err = rows.Scan(&Id, &password)
 	if err != nil {
-		return password, true
+		return -1, "login default", false
 	}
-	return "login default" + err.Error(), false
+	return Id, password, true
+}
+func Log(User User, Ip string, Info string) (string, bool) {
+	template := "Insert Logs Set User_id=?,Log_Time=?,Log_Ip=?,Log_Info=?"
+	stmt, err := DB.Prepare(template)
+	if err != nil {
+		return err.Error(), false
+	}
+	userid := User.UserId
+	logTime := GetDatetime()
+	_, err = stmt.Exec(userid, logTime, Ip, Info)
+	if err != nil {
+		return err.Error(), false
+	}
+	return "", true
 }
