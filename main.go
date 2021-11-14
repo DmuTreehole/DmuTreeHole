@@ -1,9 +1,9 @@
 package main
 
 import (
-	"main/Controller"
+	RT "main/router"
 )
 
 func main() {
-	Controller.Router()
+	RT.Router()
 }
