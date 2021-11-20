@@ -2,32 +2,24 @@ package db
 
 import (
 	"database/sql"
-	"github.com/go-ini/ini"
+	"log"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type mysql struct {
-	ip       string
-	port     string
-	user     string
-	password string
-	database string
-}
-
-var DB *sql.DB
+var (
+	Dbs *sql.DB
+	dsn string
+	err error
+)
 
 //初始化数据库
 func init() {
-	ctf, err := ini.Load("conf/app.ini")
-	mysql := &mysql{
-		ip:       ctf.Section("mysql").Key("ip").String(),
-		port:     ctf.Section("mysql").Key("port").String(),
-		user:     ctf.Section("mysql").Key("user").String(),
-		password: ctf.Section("mysql").Key("password").String(),
-		database: ctf.Section("mysql").Key("database").String(),
-	}
-	dsn := mysql.user + ":" + mysql.password + "@tcp(" + mysql.ip + ":" + mysql.port + ")/" + mysql.database
-	DB, err = sql.Open("mysql", dsn)
+	dsn = "root:dmutreehole@tcp(www.wonend.cn:3306)/Server"
+	Dbs, err = sql.Open("mysql", dsn)
+	err = Dbs.Ping()
 	if err != nil {
+		log.Panic("数据库连接失败")
 	}
+
 }
