@@ -15,7 +15,7 @@ type Userprofile struct {
 }
 
 //创建用户个人信息
-func CreateUser(pro Userprofile, db *sql.DB) (int64, bool) {
+func CreateUser(pro Userprofile, db *sql.DB) (int, bool) {
 
 	template := "Insert into UserProfile Values (?,?,?,?),"
 	stmt, err := db.Prepare(template)
@@ -29,12 +29,12 @@ func CreateUser(pro Userprofile, db *sql.DB) (int64, bool) {
 		return -1, false
 	}
 	id, _ := res.LastInsertId()
-	return id, true
+	return int(id), true
 
 }
 
 //更改用户个人信息
-func UpdateUser(pro Userprofile, db *sql.DB) (int64, bool) {
+func UpdateUser(pro Userprofile, db *sql.DB) (int, bool) {
 
 	template := "UPDATE UserProfile SET Nickname=?,Sex=?,Addr=? Where Id=?"
 	stmt, err := db.Prepare(template)
@@ -48,7 +48,7 @@ func UpdateUser(pro Userprofile, db *sql.DB) (int64, bool) {
 		return -1, false
 	}
 	i, _ := res.LastInsertId()
-	return i, true
+	return int(i), true
 
 }
 
