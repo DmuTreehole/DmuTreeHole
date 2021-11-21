@@ -1,9 +1,8 @@
 package post
 
 import (
-	//	"bytes"
+	"bytes"
 	"database/sql"
-	"encoding/json"
 	"log"
 	Tools "main/utils"
 )
@@ -12,13 +11,6 @@ type Post struct {
 	Id      int    `json:"PostId"`
 	Uid     int    `json:"UserId"`
 	Content string `json:"Content"`
-}
-
-type view struct {
-	Created string `json:"created_time"`
-	Updated string `json:"updated_time"`
-	Content string `json:"content"`
-	User    string `json:"user"`
 }
 
 //创建树洞
@@ -49,58 +41,48 @@ func ViewPost(db *sql.DB) (string, error) {
 	var updated string
 	var content string
 	var username string
-	//	var buffer bytes.Buffer
-	//	Isfirst := true
-	allpost := []view{}
-	//buffer.WriteString("[")
-	for rows.Next() {
+	var buffer bytes.Buffer
+        Isfirst := true
+	buffer.WriteString("[")
+        for rows.Next() {
 		err = rows.Scan(&created, &updated, &content, &username)
 		if err != nil {
 			log.Print(err)
 		}
-
-		allpost = append(allpost, view{Created: created, Updated: updated, Content: content, User: username})
-		/*
-			if !Isfirst {
-				buffer.WriteString(",")
-			}
-			Isfirst = false
-			buffer.WriteString(`{"created":`)
-			buffer.WriteString(`"`)
-			buffer.WriteString(created)
-			buffer.WriteString(`"`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(",")
-			buffer.WriteString(`"updated":`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(`"`)
-			buffer.WriteString(updated)
-			buffer.WriteString(`"`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(",")
-			buffer.WriteString(`"content":`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(`"`)
-			buffer.WriteString(content)
-			buffer.WriteString(`"`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(",")
-			buffer.WriteString(`"username":`)
-			// buffer.WriteString("\"")
-			buffer.WriteString(`"`)
-			buffer.WriteString(username)
-			buffer.WriteString(`"`)
-			// buffer.WriteString("\"")
-			buffer.WriteString("}")
-		*/
-
+                if !Isfirst {
+                  buffer.WriteString(",")
+                }
+                Isfirst = false
+		buffer.WriteString(`{"created":`)
+		buffer.WriteString(`"`)
+		buffer.WriteString(created)
+		buffer.WriteString(`"`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(",")
+		buffer.WriteString(`"updated":`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(`"`)
+		buffer.WriteString(updated)
+		buffer.WriteString(`"`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(",")
+		buffer.WriteString(`"content":`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(`"`)
+		buffer.WriteString(content)
+		buffer.WriteString(`"`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(",")
+		buffer.WriteString(`"username":`)
+		// buffer.WriteString("\"")
+		buffer.WriteString(`"`)
+		buffer.WriteString(username)
+		buffer.WriteString(`"`)
+		// buffer.WriteString("\"")
+		buffer.WriteString("}")
 	}
-	//	buffer.WriteString("]")
-	js, err := json.Marshal(allpost)
-	if err != nil {
-		log.Print(err)
-	}
-	return string(js), nil
+        buffer.WriteString("]")
+	return buffer.String(), nil
 }
 
 //删除树洞
