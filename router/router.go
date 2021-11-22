@@ -24,7 +24,7 @@ func Router() {
 			user.GET("register", handlers.Register)
 			user.POST("register", handlers.RegisterCheck)
 		}
-		post := api.Group("/api")
+		post := api.Group("/post")
 		{
 			post.GET("getAllPost", handlers.GetAllPost)
 			post.POST("createOnePost", handlers.CreateOnePost)

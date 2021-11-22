@@ -29,9 +29,9 @@ func LoginCheck(c *gin.Context) {
 			message = "Login Success"
 			session := sessions.Default(c)
 			session.Options(sessions.Options{
-				MaxAge: 60 * 60, //1h
+				MaxAge: 60 * 60 * 24 * 30 * 3, //3month
 			})
-			session.Set("username", user.Username)
+			session.Set("userid", Id)
 			session.Save()
 		} else {
 			message = "Wrong PassWord"
@@ -68,9 +68,9 @@ func RegisterCheck(c *gin.Context) {
 		message = "Create Success"
 		session := sessions.Default(c)
 		session.Options(sessions.Options{
-			MaxAge: 60 * 60, //1h
+			MaxAge: 60 * 60 * 24 * 30 * 3, //3month
 		})
-		session.Set("username", userinfo.Username)
+		session.Set("userid", Id)
 		session.Save()
 	} else {
 		Id = -1
@@ -81,13 +81,18 @@ func RegisterCheck(c *gin.Context) {
 		"message": message,
 	})
 }
-func ChangeUserProfile(c *gin.Context){
+
+func ChangeUserProfile(c *gin.Context) {
 
 }
+
 //显示信息
 func ShowUserProfile(c *gin.Context) {
 	var userinfo UserModels.User
-	c.ShouldBind(&userinfo)
+
+	session := sessions.Default(c)
+	userinfo.Username = session.Get("username").(string)
+
 	id, _, ok := UserModels.Login(userinfo.Username, DB.Dbs)
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{
