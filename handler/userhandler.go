@@ -81,9 +81,11 @@ func RegisterCheck(c *gin.Context) {
 		"message": message,
 	})
 }
+func ChangeUserProfile(c *gin.Context){
 
+}
 //显示信息
-func UserProfile(c *gin.Context) {
+func ShowUserProfile(c *gin.Context) {
 	var userinfo UserModels.User
 	c.ShouldBind(&userinfo)
 	id, _, ok := UserModels.Login(userinfo.Username, DB.Dbs)
