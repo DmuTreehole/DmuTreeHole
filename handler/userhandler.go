@@ -4,7 +4,6 @@ package handler
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	DB "main/db"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
@@ -22,7 +21,7 @@ func LoginCheck(c *gin.Context) {
 	//Username := c.PostForm("Username")
 	//Password := c.PostForm("Password")
 	c.ShouldBind(user)
-	Id, CurrentPassword, exist := UserModels.Login(user.Username, DB.Dbs)
+	Id, CurrentPassword, exist := UserModels.Login(user.Username)
 	if exist {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
 		if ok {
@@ -39,7 +38,7 @@ func LoginCheck(c *gin.Context) {
 	} else {
 		message = "Account Not Exists"
 	}
-	UserModels.DoLog(Id, c.ClientIP(), message, DB.Dbs)
+	UserModels.DoLog(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
 	})
@@ -63,7 +62,7 @@ func RegisterCheck(c *gin.Context) {
 	//  Email:    UserEmail,
 	//}
 	c.ShouldBind(&userinfo)
-	Id, ok := UserModels.Register(userinfo, DB.Dbs)
+	Id, ok := UserModels.Register(userinfo)
 	if ok {
 		message = "Create Success"
 		session := sessions.Default(c)
@@ -76,7 +75,7 @@ func RegisterCheck(c *gin.Context) {
 		Id = -1
 		message = "Create Default"
 	}
-	UserModels.DoLog(Id, c.ClientIP(), message, DB.Dbs)
+	UserModels.DoLog(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
 	})
@@ -93,13 +92,13 @@ func ShowUserProfile(c *gin.Context) {
 	session := sessions.Default(c)
 	userinfo.Username = session.Get("username").(string)
 
-	id, _, ok := UserModels.Login(userinfo.Username, DB.Dbs)
+	id, _, ok := UserModels.Login(userinfo.Username)
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "err",
 		})
 	} else {
-		userprofile := UserModels.QueryUser(id, DB.Dbs)
+		userprofile := UserModels.QueryUser(id)
 		c.JSON(http.StatusOK, userprofile)
 	}
 }

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gin-contrib/sessions"
-	DB "main/db"
 	post "main/models/post"
 	"net/http"
 
@@ -14,7 +13,7 @@ func GetAllPost(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Get("userid")
 
-	response, _ := post.ViewPost(DB.Dbs)
+	response, _ := post.ViewPost()
 	c.JSON(http.StatusOK, response)
 }
 
@@ -27,7 +26,7 @@ func CreateOnePost(c *gin.Context) {
 	if err := c.ShouldBindJSON(&requestpost); err != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
-	_, err := post.CreatePost(requestpost, DB.Dbs)
+	_, err := post.CreatePost(requestpost)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": "创建树洞失败"})
 	}

@@ -1,8 +1,8 @@
 package user
 
 import (
-	"database/sql"
 	"log"
+	DB "main/db"
 
 	// DB "main/db"
 	Tools "main/utils"
@@ -19,14 +19,14 @@ type User struct {
 }
 
 //用户注册
-func Register(User User, db *sql.DB) (int, bool) {
+func Register(User User) (int, bool) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	User.Password = string(hash)
 	template := "Insert User Set User_Name=?,User_Password=?,User_Email=?"
-	if db == nil {
-		log.Print("指针为空")
-	}
-	stmt, err := db.Prepare(template)
+	//if db == nil {
+	//	log.Print("指针为空")
+	//}
+	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
 		return -1, false
@@ -41,9 +41,9 @@ func Register(User User, db *sql.DB) (int, bool) {
 }
 
 //用户登录
-func Login(Username string, db *sql.DB) (int, string, bool) {
+func Login(Username string) (int, string, bool) {
 	template := "Select User_Id,User_Password From User Where User_Name=?"
-	rows, err := db.Query(template, Username)
+	rows, err := DB.DB().Query(template, Username)
 	if err != nil {
 		log.Print(err)
 		return -1, "SQL Err!", false
@@ -60,9 +60,9 @@ func Login(Username string, db *sql.DB) (int, string, bool) {
 }
 
 //记录日志
-func Log(User User, Ip string, Info string, db *sql.DB) (string, bool) {
+func Log(User User, Ip string, Info string) (string, bool) {
 	template := "Insert Logs Set User_id=?,Log_Time=?,Log_Ip=?,Log_Info=?"
-	stmt, err := db.Prepare(template)
+	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		return err.Error(), false
 	}
@@ -75,8 +75,9 @@ func Log(User User, Ip string, Info string, db *sql.DB) (string, bool) {
 	}
 	return "", true
 }
-func DoLog(Id int, Ip string, Info string, db *sql.DB) string {
-	_, ok := Log(User{Id: Id}, Ip, Info, db)
+
+func DoLog(Id int, Ip string, Info string) string {
+	_, ok := Log(User{Id: Id}, Ip, Info)
 	if ok {
 		return "Log OK"
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	Dbs *sql.DB
+	dbs *sql.DB
 	dsn string
 	err error
 )
@@ -16,10 +16,13 @@ var (
 //初始化数据库
 func init() {
 	dsn = "root:dmutreehole@tcp(www.wonend.cn:3306)/Server"
-	Dbs, err = sql.Open("mysql", dsn)
-	err = Dbs.Ping()
+	dbs, err = sql.Open("mysql", dsn)
+	err = dbs.Ping()
 	if err != nil {
 		log.Panic("数据库连接失败")
 	}
+}
 
+func DB() *sql.DB {
+	return dbs
 }

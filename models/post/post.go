@@ -1,10 +1,8 @@
 package post
 
 import (
-	//	"bytes"
-	"database/sql"
-	"encoding/json"
 	"log"
+	DB "main/db"
 	Tools "main/utils"
 )
 
@@ -22,9 +20,9 @@ type view struct {
 }
 
 //创建树洞
-func CreatePost(post Post, db *sql.DB) (int64, error) {
+func CreatePost(post Post) (int64, error) {
 	template := "Insert Post Set Created=?,User_Id=?,Updated=? Content=?"
-	stmt, err := db.Prepare(template)
+	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
 	}
@@ -39,27 +37,28 @@ func CreatePost(post Post, db *sql.DB) (int64, error) {
 }
 
 //查看树洞，采用分页查询
-func ViewPost(db *sql.DB) (string, error) {
+func ViewPost() ([]view, error) {
 	template := "Select Created,Updated,Content,User_Name From Post,User where Post.User_Id=User.User_Id"
-	rows, err := db.Query(template)
+	rows, err := DB.DB().Query(template)
 	if err != nil {
 		log.Print(err)
 	}
-	var created string
-	var updated string
-	var content string
-	var username string
+	//var created string
+	//var updated string
+	//var content string
+	//var username string
 	//	var buffer bytes.Buffer
 	//	Isfirst := true
-	allpost := []view{}
 	//buffer.WriteString("[")
+	allpost := []view{}
 	for rows.Next() {
-		err = rows.Scan(&created, &updated, &content, &username)
+		post := view{}
+		err = rows.Scan(&post.Created, &post.Updated, &post.Content, &post.User)
 		if err != nil {
 			log.Print(err)
 		}
-
-		allpost = append(allpost, view{Created: created, Updated: updated, Content: content, User: username})
+		allpost = append(allpost, post)
+		//allpost = append(allpost, view{Created: created, Updated: updated, Content: content, User: username})
 		/*
 			if !Isfirst {
 				buffer.WriteString(",")
@@ -96,17 +95,18 @@ func ViewPost(db *sql.DB) (string, error) {
 
 	}
 	//	buffer.WriteString("]")
-	js, err := json.Marshal(allpost)
-	if err != nil {
-		log.Print(err)
-	}
-	return string(js), nil
+	//js, err := json.Marshal(allpost)
+	//if err != nil {
+	//	log.Print(err)
+	//}
+	//return string(js), nil
+	return allpost, nil
 }
 
 //删除树洞
-func DeletePost(post_id string, db *sql.DB) error {
+func DeletePost(post_id string) error {
 	template := "DELETE From Post Where Post_id=?"
-	_, err := db.Query(template, post_id)
+	_, err := DB.DB().Query(template, post_id)
 	if err != nil {
 		log.Print(err)
 		return err
