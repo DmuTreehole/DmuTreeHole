@@ -12,13 +12,15 @@ import (
 
 //查看所有的树洞
 func GetAllPost(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Get("userid")
+	/*
+		session := sessions.Default(c)
+		session.Get("userid")
+	*/
 	type page struct {
 		id int `json:"id"`
 	}
 	p := page{}
-	if err := c.BindJSON(&p); err != nil {
+	if err := c.ShouldBind(&p); err != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
 	response, _ := post.ViewPost(p.id)
