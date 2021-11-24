@@ -14,11 +14,13 @@ import (
 func GetAllPost(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Get("userid")
-	var page int
+	var page struct{
+		id int
+	}
 	if err:=c.ShouldBindJSON(&page);err!=nil{
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
-	response, _ := post.ViewPost(page)
+	response, _ := post.ViewPost(page.id)
 	c.JSON(http.StatusOK, response)
 }
 
