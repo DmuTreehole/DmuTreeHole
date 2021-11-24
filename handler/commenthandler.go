@@ -13,12 +13,12 @@ func GetAllComment(c *gin.Context){
 	session := sessions.Default(c)
 	session.Get("userid")
 	var pid struct{
-		id int 
+		Id int `json:"id"`
 	}
 	if err:=c.ShouldBindJSON(&pid) ;err!=nil{
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
-	response,_:=post.ShowComment(pid.id)
+	response,_:=post.ShowComment(pid.Id)
 	c.JSON(http.StatusOK,response)
 }
 //创建一个评论
