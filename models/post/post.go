@@ -13,11 +13,11 @@ type Post struct {
 }
 
 type view struct {
-	Id string 
-	Created string `json:"created_time"`
-	Updated string `json:"updated_time"`
-	Content string `json:"content"`
-	Username    string `json:"user"`
+	Id       string
+	Created  string `json:"created_time"`
+	Updated  string `json:"updated_time"`
+	Content  string `json:"content"`
+	Username string `json:"user"`
 }
 
 //创建树洞
@@ -39,15 +39,15 @@ func CreatePost(post Post) (int64, error) {
 
 //查看树洞，采用分页查询,每次显示三条
 func ViewPost(page int) ([]view, error) {
-	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User where Post.User_Id=User.User_Id Limit 3 offset ?"
-	rows, err := DB.DB().Query(template,page)
+	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User where Post.User_Id=User.User_Id Limit 5 offset ?"
+	rows, err := DB.DB().Query(template, page)
 	if err != nil {
 		log.Print(err)
 	}
 	allpost := []view{}
 	for rows.Next() {
 		post := view{}
-		err = rows.Scan(&post.Id,&post.Created, &post.Updated, &post.Content, &post.Username)
+		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username)
 		if err != nil {
 			log.Print(err)
 		}
