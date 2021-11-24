@@ -3,7 +3,7 @@ package handler
 import (
 	post "main/models/post"
 	"net/http"
-
+	"strconv"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -36,5 +36,11 @@ func CreateOneComment(c*gin.Context){
 	c.JSON(200, gin.H{"msg": "评论创建成功"})
 }
 func DeleteOneComment(c *gin.Context){
-	//TODO：某用户是否有删除的权限
+	id:=c.Params.ByName("id")
+	//这里暂时采用comment id 来删除
+	cid,_:=strconv.Atoi(id)
+	if err:=post.DeletePost(cid);err!=nil{
+		c.JSON(400,gin.H{"msg":"评论删除失败"})
+	}
+	c.JSON(200, gin.H{"msg": "评论删除成功"})
 }

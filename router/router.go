@@ -28,11 +28,13 @@ func Router() {
 		{
 			post.GET("getallpost", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
+			post.DELETE("deleteonepost:/id",handlers.DeleteOnePost)
 		}
 		comment:=api.Group("/comment")
 		{
 			comment.POST("createonecomment",handlers.CreateOneComment)
 			comment.POST("getallcomment",handlers.GetAllComment)
+			comment.DELETE("deletecomment:/id",handlers.DeleteOneComment)
 		}
 	}
 	r.Run(":8081")

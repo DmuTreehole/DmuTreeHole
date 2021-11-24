@@ -57,7 +57,7 @@ func ViewPost(page int) ([]view, error) {
 }
 
 //删除树洞
-func DeletePost(post_id string) error {
+func DeletePost(post_id int) error {
 	template := "DELETE From Post Where Post_id=?"
 	_, err := DB.DB().Query(template, post_id)
 	if err != nil {
