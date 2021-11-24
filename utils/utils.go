@@ -6,12 +6,12 @@ import (
 )
 
 func GetDatetime() (datetime string) {
-	templage := "2006-01-02 15:04:05"
-	datetime = time.Now().Format(templage)
+	template := "2006-01-02 15:04:05"
+	datetime = time.Now().Format(template)
 	return
 }
-func CobPassWord(Password string, password2 string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(password2), []byte(Password))
+func CobPassWord(password string, password2 string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(password2), []byte(password))
 	if err != nil {
 		return false
 	}

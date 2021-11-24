@@ -1,28 +1,31 @@
 package handler
 
 import (
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	post "main/models/post"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-contrib/sessions"
-
-	"github.com/gin-gonic/gin"
 )
 
 //查看所有的树洞
 func GetAllPost(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Get("userid")
-	type page struct {
-		id int `json:"id"`
+	//session := sessions.Default(c)
+	//id := session.Get("userid").(int)
+	//type page struct {
+	//	id int `json:"id"`
+	//}
+	//p := page{}
+	//if err := c.BindJSON(&p); err != nil {
+	//	c.JSON(400, gin.H{"error": "Json绑定错误"})
+	//}
+	page, err := strconv.Atoi(c.Param("num"))
+	if err != nil {
+		c.JSON(http.StatusOK, nil)
+	} else {
+		response, _ := post.ViewPost(page)
+		c.JSON(http.StatusOK, response)
 	}
-	p := page{}
-	if err := c.BindJSON(&p); err != nil {
-		c.JSON(400, gin.H{"error": "Json绑定错误"})
-	}
-	response, _ := post.ViewPost(p.id)
-	c.JSON(http.StatusOK, response)
 }
 
 //创建树洞

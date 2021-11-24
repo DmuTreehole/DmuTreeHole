@@ -1,7 +1,6 @@
 package user
 
 import (
-	"encoding/json"
 	"log"
 	DB "main/db"
 )
@@ -34,47 +33,41 @@ func CreateUser(pro Userprofile) (int, bool) {
 }
 
 //更改用户个人信息
-func UpdateUser(pro Userprofile) (int, bool) {
+func UpdateUser(pro Userprofile) bool {
 
 	template := "UPDATE UserProfile SET Nickname=?,Sex=?,Addr=? Where Id=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
-		return -1, false
+		//return -1, false
+		return false
 	}
-	res, err := stmt.Exec(pro.Nickname, pro.Sex, pro.Addr, pro.Id)
+	_, err = stmt.Exec(pro.Nickname, pro.Sex, pro.Addr, pro.Id)
 	if err != nil {
 		log.Print(err)
-		return -1, false
+		//return -1, false
+		return false
 	}
-	i, _ := res.LastInsertId()
-	return int(i), true
-
+	//i, _ := res.LastInsertId() ?????? update 还查id?
+	//return int(i), true
+	return true
 }
 
 // 通过id 查询信息
-func QueryUser(id int) []byte {
+func QueryUser(id int) (Userprofile, bool) {
 
 	var pro Userprofile
 	template := "Select * from UserProfile where Id=?,"
 	rows, err := DB.DB().Query(template, id)
 	if err != nil {
 		log.Print(err)
-		return nil
+		return pro, false
 	}
-
-	for rows.Next() {
-		err = rows.Scan(pro.Id, pro.Nickname, pro.Sex, pro.Addr)
-		if err != nil {
-			log.Print(err)
-			return nil
-		}
-	}
-
-	res, err := json.Marshal(pro)
+	rows.Next()
+	err = rows.Scan(pro.Id, pro.Nickname, pro.Sex, pro.Addr)
 	if err != nil {
 		log.Print(err)
-		return nil
+		return pro, false
 	}
-	return res
+	return pro, true
 }

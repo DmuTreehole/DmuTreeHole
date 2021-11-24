@@ -1,13 +1,11 @@
 package user
 
 import (
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	DB "main/db"
-
-	// DB "main/db"
 	Tools "main/utils"
-
-	"golang.org/x/crypto/bcrypt"
+	// DB "main/db"
 )
 
 //用户登录和注册信息
@@ -60,26 +58,17 @@ func Login(Username string) (int, string, bool) {
 }
 
 //记录日志
-func Log(User User, Ip string, Info string) (string, bool) {
+func Log(Id int, Ip string, Info string) bool {
 	template := "Insert Logs Set User_id=?,Log_Time=?,Log_Ip=?,Log_Info=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
-		return err.Error(), false
+		return false
 	}
-	userid := User.Id
 	logTime := Tools.GetDatetime()
-	_, err = stmt.Exec(userid, logTime, Ip, Info)
+	_, err = stmt.Exec(Id, logTime, Ip, Info)
 	if err != nil {
 		log.Print(err)
-		return err.Error(), false
+		return false
 	}
-	return "", true
-}
-
-func DoLog(Id int, Ip string, Info string) string {
-	_, ok := Log(User{Id: Id}, Ip, Info)
-	if ok {
-		return "Log OK"
-	}
-	return "Log Default"
+	return true
 }

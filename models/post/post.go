@@ -28,7 +28,7 @@ func CreatePost(post Post) (int64, error) {
 		log.Print(err)
 	}
 	created := Tools.GetDatetime()
-	updated := Tools.GetDatetime()
+	updated := created
 	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
 	if err != nil {
 		log.Print(err)
@@ -37,10 +37,11 @@ func CreatePost(post Post) (int64, error) {
 	return id, err
 }
 
-//查看树洞，采用分页查询,每次显示三条
+//查看树洞，采用分页查询,每次显示五条
 func ViewPost(page int) ([]view, error) {
-	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User where Post.User_Id=User.User_Id Limit 5 offset ?"
-	rows, err := DB.DB().Query(template, page)
+	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
+		"where Post.User_Id=User.User_Id Limit 5 offset ? Order By Created Desc"
+	rows, err := DB.DB().Query(template, (page-1)*5) // page 从1开始
 	if err != nil {
 		log.Print(err)
 	}

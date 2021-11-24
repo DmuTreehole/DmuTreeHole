@@ -26,19 +26,14 @@ func LoginCheck(c *gin.Context) {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
 		if ok {
 			message = "Login Success"
-			session := sessions.Default(c)
-			session.Options(sessions.Options{
-				MaxAge: 60 * 60 * 24 * 30 * 3, //3month
-			})
-			session.Set("userid", Id)
-			session.Save()
+			setSessionById(c, Id)
 		} else {
 			message = "Wrong PassWord"
 		}
 	} else {
 		message = "Account Not Exists"
 	}
-	UserModels.DoLog(Id, c.ClientIP(), message)
+	UserModels.Log(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
 	})
@@ -65,24 +60,27 @@ func RegisterCheck(c *gin.Context) {
 	Id, ok := UserModels.Register(userinfo)
 	if ok {
 		message = "Create Success"
-		session := sessions.Default(c)
-		session.Options(sessions.Options{
-			MaxAge: 60 * 60 * 24 * 30 * 3, //3month
-		})
-		session.Set("userid", Id)
-		session.Save()
+		setSessionById(c, Id)
 	} else {
 		Id = -1
 		message = "Create Default"
 	}
-	UserModels.DoLog(Id, c.ClientIP(), message)
+	UserModels.Log(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
 	})
 }
 
 func ChangeUserProfile(c *gin.Context) {
-//TODO:更改用户信息
+	//TODO:更改用户信息
+	var userprofile UserModels.Userprofile
+	c.ShouldBindJSON(&userprofile)
+	session := sessions.Default(c)
+	userprofile.Id = session.Get("userid").(int)
+	if !UserModels.UpdateUser(userprofile) {
+		c.JSON(http.StatusOK, gin.H{"message": "ok"})
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "default"})
 }
 
 //显示信息
@@ -98,7 +96,19 @@ func ShowUserProfile(c *gin.Context) {
 			"message": "err",
 		})
 	} else {
-		userprofile := UserModels.QueryUser(id)
+		userprofile, ok := UserModels.QueryUser(id)
+		if !ok {
+			c.JSON(http.StatusOK, gin.H{"message": "default"})
+		}
 		c.JSON(http.StatusOK, userprofile)
 	}
+}
+
+func setSessionById(c *gin.Context, Id int) {
+	session := sessions.Default(c)
+	session.Options(sessions.Options{
+		MaxAge: 60 * 60 * 24 * 30 * 3, //3month
+	})
+	session.Set("userid", Id)
+	session.Save()
 }
