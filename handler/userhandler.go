@@ -82,7 +82,7 @@ func RegisterCheck(c *gin.Context) {
 }
 
 func ChangeUserProfile(c *gin.Context) {
-
+//TODO:更改用户信息
 }
 
 //显示信息

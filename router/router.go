@@ -26,8 +26,13 @@ func Router() {
 		}
 		post := api.Group("/post")
 		{
-			post.GET("getAllPost", handlers.GetAllPost)
-			post.POST("createOnePost", handlers.CreateOnePost)
+			post.GET("getallpost", handlers.GetAllPost)
+			post.POST("createonepost", handlers.CreateOnePost)
+		}
+		comment:=api.Group("/comment")
+		{
+			comment.POST("createonecomment",handlers.CreateOneComment)
+			comment.POST("getallcomment",handlers.GetAllComment)
 		}
 	}
 	r.Run(":8081")

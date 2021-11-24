@@ -8,12 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//现在只实现了对0-5个数据的分页查询，用于前端的测试
+//查看所有的树洞
 func GetAllPost(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Get("userid")
-
-	response, _ := post.ViewPost()
+	var page int
+	if err:=c.ShouldBindJSON(&page);err!=nil{
+		c.JSON(400, gin.H{"error": "Json绑定错误"})
+	}
+	response, _ := post.ViewPost(page)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -31,4 +34,8 @@ func CreateOnePost(c *gin.Context) {
 		c.JSON(400, gin.H{"msg": "创建树洞失败"})
 	}
 	c.JSON(200, gin.H{"msg": "树洞创建成功"})
+}
+//删除树洞
+func DeleteOnePost(c *gin.Context){
+	//TODO:删除一个树洞
 }
