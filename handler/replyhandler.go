@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"main/models/post"
 	"net/http"
@@ -38,8 +39,10 @@ func DeleteReply(c *gin.Context) {
 
 //创建评论
 func CreateReply(c *gin.Context) {
+	session := sessions.Default(c)
 	reply := post.Reply{}
 	err := c.ShouldBindJSON(&reply) //跟show一样comment的回复proreply置-1
+	reply.UserId = session.Get("userid").(int)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": "default"})
 	}
