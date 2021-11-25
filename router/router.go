@@ -12,7 +12,7 @@ func Router() {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session", store))
 	r.LoadHTMLGlob("templates/*.html")
-	r.StaticFile("View/Photo.jpg", "View/Photo.jpg")
+	//r.StaticFile("View/Photo.jpg", "View/Photo.jpg")
 	api := r.Group("/api")
 	{
 		api.POST("/question", handlers.Getquestion)
@@ -28,13 +28,19 @@ func Router() {
 		{
 			post.POST("getallpost/:num", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
-			post.DELETE("deleteonepost/:id", handlers.DeleteOnePost)
+			post.POST("deleteonepost/:id", handlers.DeleteOnePost)
 		}
 		comment := api.Group("/comment")
 		{
 			comment.POST("getallcomment/:id", handlers.GetAllComment)
 			comment.POST("createonecomment", handlers.CreateOneComment)
-			comment.DELETE("deletecomment/:id", handlers.DeleteOneComment)
+			comment.POST("deletecomment/:id", handlers.DeleteOneComment)
+		}
+		reply := api.Group("/reply")
+		{
+			reply.POST("getReply/:page", handlers.GetReply)
+			reply.POST("deleteReply", handlers.DeleteReply)
+			reply.POST("createReply", handlers.CreateReply)
 		}
 	}
 	r.Run(":8081")
