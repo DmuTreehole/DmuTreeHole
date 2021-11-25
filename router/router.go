@@ -20,9 +20,11 @@ func Router() {
 		user := api.Group("/user")
 		{
 			user.GET("login", handlers.Login)
-			user.POST("login", handlers.LoginCheck)
 			user.GET("register", handlers.Register)
+			user.GET("showbanedlist",handlers.ShowBannedList)
+			user.POST("login", handlers.LoginCheck)
 			user.POST("register", handlers.RegisterCheck)
+			user.POST("banusers",handlers.BanUsers)
 		}
 		post := api.Group("/post")
 		{
@@ -38,9 +40,9 @@ func Router() {
 		}
 		reply := api.Group("/reply")
 		{
-			reply.POST("getReply/:page", handlers.GetReply)
-			reply.POST("deleteReply", handlers.DeleteReply)
-			reply.POST("createReply", handlers.CreateReply)
+			reply.POST("getreply/:page", handlers.GetReply)
+			reply.POST("deletereply", handlers.DeleteReply)
+			reply.POST("createreply", handlers.CreateReply)
 		}
 	}
 	r.Run(":8081")

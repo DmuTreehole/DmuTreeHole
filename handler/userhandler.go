@@ -72,7 +72,6 @@ func RegisterCheck(c *gin.Context) {
 }
 
 func ChangeUserProfile(c *gin.Context) {
-	//TODO:更改用户信息
 	var userprofile UserModels.Userprofile
 	c.ShouldBindJSON(&userprofile)
 	session := sessions.Default(c)

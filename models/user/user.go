@@ -21,9 +21,6 @@ func Register(User User) (int, bool) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	User.Password = string(hash)
 	template := "Insert User Set User_Name=?,User_Password=?,User_Email=?"
-	//if db == nil {
-	//	log.Print("指针为空")
-	//}
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
