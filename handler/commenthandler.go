@@ -27,11 +27,10 @@ func GetAllComment(c *gin.Context) {
 
 //创建一个评论
 func CreateOneComment(c *gin.Context) {
-	session := sessions.Default(c)
-	uid := session.Get("userid").(int)
-	//绑定树洞编号
 	var comment post.Comment
-	comment.Uid = uid
+	session := sessions.Default(c)
+	comment.Uid = session.Get("userid").(int)
+	//绑定树洞编号
 	if err := c.ShouldBindJSON(&comment); err != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
