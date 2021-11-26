@@ -11,8 +11,8 @@ import (
 //用户登录和注册信息
 type User struct {
 	Id       int    `json:'User_id'`
-	Username string `json:'User_name'`
-	Password string `json:'User_password'"`
+	Username string `json:'User_name',form:"Username"`
+	Password string `json:'User_password',form:"Password"`
 	Email    string `json:'User_Email'`
 }
 
