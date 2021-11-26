@@ -20,7 +20,7 @@ func LoginCheck(c *gin.Context) {
 	var user = UserModels.User{}
 	//Username := c.PostForm("Username")
 	//Password := c.PostForm("Password")
-	c.ShouldBind(user)
+	c.ShouldBind(&user)
 	Id, CurrentPassword, exist := UserModels.Login(user.Username)
 	if exist {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 
 //检查注册
 func RegisterCheck(c *gin.Context) {
-	var message string = "Create Default"
+	var message = "Create Default"
 	var userinfo = UserModels.User{}
 	//UserName := c.PostForm("Username")
 	//Password := c.PostForm("Password")

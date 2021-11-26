@@ -8,8 +8,8 @@ import (
 //用户个人信息
 type Userprofile struct {
 	Id       int    `json:User_id`
-	Nickname string `json:User_Nickname`
 	Sex      int    `json:User_Sex`
+	Nickname string `json:User_Nickname`
 	Addr     string `User_Addr`
 }
 
