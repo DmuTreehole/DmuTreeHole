@@ -19,16 +19,23 @@ func GetAllPost(c *gin.Context) {
 
 //创建树洞
 func CreateOnePost(c *gin.Context) {
-	var requestpost post.Post
+	requestpost := post.Post{}
 	session := sessions.Default(c)
-	requestpost.Uid = session.Get("userid").(int)
 	//bind data
-	if err := c.ShouldBindJSON(&requestpost); err != nil {
+	if c.ShouldBind(&requestpost) != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
+		return
 	}
+	tmp := session.Get("userid")
+	if tmp == nil {
+		c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
+		return
+	}
+	requestpost.Uid = tmp.(int)
 	_, err := post.CreatePost(requestpost)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": "创建树洞失败"})
+		return
 	}
 	c.JSON(200, gin.H{"msg": "树洞创建成功"})
 }
