@@ -28,6 +28,7 @@ func Router() {
 		}
 		post := api.Group("/post")
 		{
+			post.GET("createonepost", handlers.ShowPostView)
 			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)

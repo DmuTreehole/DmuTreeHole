@@ -107,6 +107,7 @@ func setSessionById(c *gin.Context, Id int) {
 	session := sessions.Default(c)
 	session.Options(sessions.Options{
 		MaxAge: 60 * 60 * 24 * 30 * 3, //3month
+		Path:   "/",
 	})
 	session.Set("userid", Id)
 	session.Save()

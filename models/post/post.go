@@ -8,9 +8,9 @@ import (
 )
 
 type Post struct {
-	Id      int    `json:"PostId"`
+	Id      int    `json:"PostId",form:"PostId"`
 	Uid     int    `json:"UserId"`
-	Content string `json:"Content"`
+	Content string `json:"Content",form:"Content"`
 }
 
 type PagePost struct {
@@ -27,13 +27,14 @@ type view struct {
 
 //创建树洞
 func CreatePost(post Post) (int64, error) {
-	template := "Insert Post Set Created=?,User_Id=?,Updated=? Content=?"
+	template := "Insert Post Set Created=?,User_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
 	}
 	created := Tools.GetDatetime()
 	updated := created
+	fmt.Println(post)
 	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
 	if err != nil {
 		log.Print(err)

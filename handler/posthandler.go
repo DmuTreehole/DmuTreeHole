@@ -26,6 +26,7 @@ func CreateOnePost(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 		return
 	}
+	fmt.Println(requestpost)
 	tmp := session.Get("userid")
 	if tmp == nil {
 		c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
@@ -48,4 +49,8 @@ func DeleteOnePost(c *gin.Context) {
 		c.JSON(400, gin.H{"msg": "树洞删除失败"})
 	}
 	c.JSON(200, gin.H{"msg": "树洞删除成功"})
+}
+
+func ShowPostView(c *gin.Context) {
+	c.HTML(http.StatusOK, "createpost.html", gin.H{})
 }
