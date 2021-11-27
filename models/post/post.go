@@ -1,6 +1,7 @@
 package post
 
 import (
+	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
@@ -10,6 +11,10 @@ type Post struct {
 	Id      int    `json:"PostId"`
 	Uid     int    `json:"UserId"`
 	Content string `json:"Content"`
+}
+
+type PagePost struct {
+	Page int `json:"page"`
 }
 
 type view struct {
@@ -40,8 +45,9 @@ func CreatePost(post Post) (int64, error) {
 //查看树洞，采用分页查询,每次显示五条
 func ViewPost(page int) ([]view, error) {
 	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
-		"where Post.User_Id=User.User_Id Limit 5 offset ? Order By Created Desc"
+		"where Post.User_Id=User.User_Id Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, (page-1)*5) // page 从1开始
+	fmt.Println(template)
 	if err != nil {
 		log.Print(err)
 	}

@@ -21,26 +21,26 @@ func Router() {
 		{
 			user.GET("login", handlers.Login)
 			user.GET("register", handlers.Register)
-			user.GET("showbanedlist",handlers.ShowBannedList)
+			user.GET("showbanedlist", handlers.ShowBannedList)
 			user.POST("login", handlers.LoginCheck)
 			user.POST("register", handlers.RegisterCheck)
-			user.POST("banusers",handlers.BanUsers)
+			user.POST("banusers", handlers.BanUsers)
 		}
 		post := api.Group("/post")
 		{
-			post.POST("getallpost/:num", handlers.GetAllPost)
+			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
-			post.POST("deleteonepost/:id", handlers.DeleteOnePost)
+			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
 		}
 		comment := api.Group("/comment")
 		{
-			comment.POST("getallcomment/:id", handlers.GetAllComment)
+			comment.GET("getallcomment/:id", handlers.GetAllComment)
 			comment.POST("createonecomment", handlers.CreateOneComment)
-			comment.POST("deletecomment/:id", handlers.DeleteOneComment)
+			comment.GET("deletecomment/:id", handlers.DeleteOneComment)
 		}
 		reply := api.Group("/reply")
 		{
-			reply.POST("getreply/:page", handlers.GetReply)
+			reply.GET("getreply/:page", handlers.GetReply)
 			reply.POST("deletereply", handlers.DeleteReply)
 			reply.POST("createreply", handlers.CreateReply)
 		}
