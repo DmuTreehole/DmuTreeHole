@@ -9,7 +9,7 @@ import (
 func Getquestion(c *gin.Context) {
 	question, err := certification.Getonequestion()
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": "default"})
+		c.JSON(400, gin.H{"message": "default"})
 	} else {
 		c.JSON(http.StatusOK, question)
 	}

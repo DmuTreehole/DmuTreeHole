@@ -20,7 +20,7 @@ func GetAllComment(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	response, err := post.ShowComment(id)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": "default"})
+		c.JSON(400, gin.H{"message": "default"})
 	}
 	c.JSON(http.StatusOK, response)
 }

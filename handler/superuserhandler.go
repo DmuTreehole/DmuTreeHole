@@ -18,7 +18,7 @@ type BanedRequest struct{
 func BanUsers(c*gin.Context)  {
 	session:=sessions.Default(c)
 	if IssuperUser:=session.Get("userid").(int);IssuperUser!=1{
-		c.JSON(200,gin.H{"msg":"当前用户不具有封禁权限"})
+		c.JSON(400,gin.H{"msg":"当前用户不具有封禁权限"})
 	}
 	var banedrequest BanedRequest
 	if err:=c.ShouldBindJSON(&banedrequest);err!=nil{
@@ -38,7 +38,7 @@ func BanUsers(c*gin.Context)  {
 func ShowBannedList(c*gin.Context){
 	session:=sessions.Default(c)
 	if IssuperUser:=session.Get("userid").(int);IssuperUser!=1{
-		c.JSON(200,gin.H{"msg":"当前用户不具有封禁权限"})
+		c.JSON(400,gin.H{"msg":"当前用户不具有封禁权限"})
 	}
 	banedlist,_:=UserModels.ShowBannedUsers()
 	c.JSON(200,banedlist)
