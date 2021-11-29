@@ -10,10 +10,10 @@ import (
 
 //用户登录和注册信息
 type User struct {
-	Id       int    `json:'User_id'`
-	Username string `json:'User_name',form:'Username'`
-	Password string `json:'User_password',form:'Password"`
-	Email    string `json:'User_Email'`
+	Id       int    `json:"User_Id"`
+	Username string `json:"User_name",form:"Username"`
+	Password string `json:"User_password",form:"Password"`
+	Email    string `json:"User_Email"`
 }
 
 //用户注册
@@ -44,14 +44,14 @@ func Login(Username string) (int, string, bool) {
 		return -1, "SQL Err!", false
 	}
 	var password string
-	var Id int
+	var id int
 	rows.Next()
-	err = rows.Scan(&Id, &password)
+	err = rows.Scan(&id, &password)
 	if err != nil {
 		log.Print(err)
 		return -1, "login default", false
 	}
-	return Id, password, true
+	return id, password, true
 }
 
 //记录日志
@@ -68,4 +68,20 @@ func Log(Id int, Ip string, Info string) bool {
 		return false
 	}
 	return true
+}
+
+//通过userID获取UserName
+func GetUserNameById(Id int) (string, error) {
+	template := "Select User_Name From User Where User_Id = ?"
+	rows, err := DB.DB().Query(template, Id)
+	if err != nil {
+		return "", err
+	}
+	rows.Next()
+	userName := ""
+	err = rows.Scan(&userName)
+	if err != nil {
+		return "", err
+	}
+	return userName, nil
 }

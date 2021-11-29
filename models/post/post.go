@@ -66,8 +66,14 @@ func ViewPost(page int) ([]view, error) {
 
 //删除树洞
 func DeletePost(post_id int) error {
-	template := "DELETE From Post Where Post_id=?"
+	template := "DELETE From Comment Where Post_Id=?"
 	_, err := DB.DB().Query(template, post_id)
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+	template = "DELETE From Post Where Post_Id=?"
+	_, err = DB.DB().Query(template, post_id)
 	if err != nil {
 		log.Print(err)
 		return err

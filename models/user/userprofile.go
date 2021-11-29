@@ -7,10 +7,10 @@ import (
 
 //用户个人信息
 type Userprofile struct {
-	Id       int    `json:User_id`
-	Sex      int    `json:User_Sex`
-	Nickname string `json:User_Nickname`
-	Addr     string `User_Addr`
+	Id       int    `json:"User_id"`
+	Sex      int    `json:"User_Sex"`
+	Nickname string `json:"User_Nickname"`
+	Addr     string `json:"User_Addr"`
 }
 
 //创建用户个人信息

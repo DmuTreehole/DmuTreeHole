@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<p1>发布帖子</p1>
+<form action="http://localhost:8081/api/post/createonepost" method="post">
+  PostId:<input type="text" name="PostId" />
+  Content:<input type="text" name="Content" />
+  <input type="submit" value="提交">
+</form>
+<p1>发布评论</p1>
+<form action="http://localhost:8081/api/comment/createonecomment" method="post">
+  PostId:<input type="text" name="PostId" />
+  Content:<input type="text" name="Content" />
+  <input type="submit" value="提交">
+</form>
+<p1>删除帖子</p1>
+<form action="http://localhost:8081/api/post/deleteonepost" method="get">
+  PostId:<input type="text" name="PostId" />
+  <input type="submit" value="提交">
+</form>
+<p1>删除帖子</p1>
+<form action="http://localhost:8081/api/comment/createonecomment" method="post">
+  PostId:<input type="text" name="PostId" />
+  <input type="submit" value="提交">
+</form>
+</body>
+</html>

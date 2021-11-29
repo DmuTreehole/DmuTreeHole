@@ -1,21 +1,22 @@
 package post
 
 import (
+	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
 )
 
 type Comment struct {
-	Uid     int    `json:"User_Id"`
-	Pid     int    `json:"Post_Id"`
-	Content string `json:"Content"`
+	Pid     int    `json:"PostId",form:"PostId"`
+	Uid     int    `json:"UserId"`
+	Content string `json:"Content",form:"Content"`
 }
 type Comment_view struct {
 	Id       int `json:"Comment_Id"`
-	Uid      int `json:"User_Id"`
-	Pid      int `json:"Post_Id"`
-	Username string
+	Uid      int
+	Pid      int    `json:"Post_Id"`
+	Username string `json:"User_Id"`
 	Updated  string
 	Created  string
 	Content  string `json:"Content"`
@@ -23,13 +24,14 @@ type Comment_view struct {
 
 //创建评论
 func CreateComment(comment Comment) (int64, error) {
-	template := "Insert Comment Set Created=?,User_Id=?,Post_Id=?Updated=? Content=?"
+	template := "Insert Comment Set Created=?,User_Id=?,Post_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
 		log.Print(err)
 	}
 	created := Tools.GetDatetime()
-	updated := Tools.GetDatetime()
+	updated := created
+	fmt.Println(comment)
 	result, err := stmt.Exec(created, comment.Uid, comment.Pid, updated, comment.Content)
 	if err != nil {
 		log.Print(err)

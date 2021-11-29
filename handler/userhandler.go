@@ -2,6 +2,7 @@ package handler
 
 //与用户相关的处理器函数
 import (
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	UserModels "main/models/user"
@@ -101,6 +102,18 @@ func ShowUserProfile(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, userprofile)
 	}
+}
+
+func GetUserName(c *gin.Context) {
+	var user = UserModels.User{}
+	c.ShouldBind(&user)
+	username, err := UserModels.GetUserNameById(user.Id)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "dafault"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"username": username})
 }
 
 func setSessionById(c *gin.Context, Id int) {

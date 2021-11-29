@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	post "main/models/post"
@@ -12,7 +11,6 @@ import (
 //查看所有的树洞
 func GetAllPost(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Param("page"))
-	fmt.Println(page)
 	response, _ := post.ViewPost(page)
 	c.JSON(http.StatusOK, response)
 }
@@ -26,7 +24,6 @@ func CreateOnePost(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 		return
 	}
-	fmt.Println(requestpost)
 	tmp := session.Get("userid")
 	if tmp == nil {
 		c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
@@ -51,6 +48,6 @@ func DeleteOnePost(c *gin.Context) {
 	c.JSON(200, gin.H{"msg": "树洞删除成功"})
 }
 
-func ShowPostView(c *gin.Context) {
-	c.HTML(http.StatusOK, "createpost.html", gin.H{})
+func Test(c *gin.Context) {
+	c.HTML(http.StatusOK, "test.html", nil)
 }

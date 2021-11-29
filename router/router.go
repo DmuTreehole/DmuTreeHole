@@ -16,6 +16,7 @@ func Router() {
 	api := r.Group("/api")
 	{
 		api.POST("/question", handlers.Getquestion)
+		api.GET("/test", handlers.Test)
 		//接口层的代码书写在这
 		user := api.Group("/user")
 		{
@@ -25,10 +26,10 @@ func Router() {
 			user.POST("login", handlers.LoginCheck)
 			user.POST("register", handlers.RegisterCheck)
 			user.POST("banusers", handlers.BanUsers)
+			user.POST("getUserName", handlers.GetUserName)
 		}
 		post := api.Group("/post")
 		{
-			post.GET("createonepost", handlers.ShowPostView)
 			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
@@ -38,12 +39,6 @@ func Router() {
 			comment.GET("getallcomment/:id", handlers.GetAllComment)
 			comment.POST("createonecomment", handlers.CreateOneComment)
 			comment.GET("deletecomment/:id", handlers.DeleteOneComment)
-		}
-		reply := api.Group("/reply")
-		{
-			reply.GET("getreply/:page", handlers.GetReply)
-			reply.POST("deletereply", handlers.DeleteReply)
-			reply.POST("createreply", handlers.CreateReply)
 		}
 	}
 	r.Run(":8081")
