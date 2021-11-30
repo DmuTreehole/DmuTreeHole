@@ -31,7 +31,7 @@ func CreateOneComment(c *gin.Context) {
 	session := sessions.Default(c)
 	comment.Uid = session.Get("userid").(int)
 	//绑定树洞编号
-	if err := c.ShouldBindJSON(&comment); err != nil {
+	if err := c.ShouldBind(&comment); err != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})
 	}
 	_, err := post.CreateComment(comment)
