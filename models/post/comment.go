@@ -13,10 +13,10 @@ type Comment struct {
 	Content string `json:"Content",form:"Content"`
 }
 type Comment_view struct {
-	Id       int `json:"Comment_Id"`
-	Uid      int
-	Pid      int    `json:"Post_Id"`
-	Username string `json:"User_Id"`
+	Id       int `json:"CommentId"`
+	Uid      int `json:"UserId"`
+	Pid      int    `json:"PostId"`
+	Username string `json:"Username"`
 	Updated  string
 	Created  string
 	Content  string `json:"Content"`

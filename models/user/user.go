@@ -10,10 +10,10 @@ import (
 
 //用户登录和注册信息
 type User struct {
-	Id       int    `json:"User_Id"`
-	Username string `json:"User_name",form:"Username"`
-	Password string `json:"User_password",form:"Password"`
-	Email    string `json:"User_Email"`
+	Id       int    `json:"UserId"`
+	Username string `json:"Username",form:"Username"`
+	Password string `json:"Userpassword",form:"Password"`
+	Email    string `json:"UserEmail"`
 }
 
 //用户注册

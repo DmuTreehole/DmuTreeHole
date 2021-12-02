@@ -21,8 +21,8 @@ type view struct {
 	Id       string
 	Created  string `json:"created_time"`
 	Updated  string `json:"updated_time"`
-	Content  string `json:"content"`
-	Username string `json:"user"`
+	Content  string `json:"Content"`
+	Username string `json:"Username"`
 }
 
 //创建树洞

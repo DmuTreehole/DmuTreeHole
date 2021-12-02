@@ -6,13 +6,13 @@ import (
 )
 
 type Question struct {
-	QuestionId int    `json:"question_id"`
-	QuestionName string `json:"question_Name"`
-	AnswerA    string `json:"question_A"`
-	AnswerB    string `json:"question_B"`
-	AnswerC    string `json:"question_C"`
-	AnswerD    string `json:"question_D"`
-	Correct    string `json:"question_correct"`
+	QuestionId int    `json:"QuestionIid"`
+	QuestionName string `json:"QuestionName"`
+	AnswerA    string `json:"AnswerA"`
+	AnswerB    string `json:"AnswerB"`
+	AnswerC    string `json:"AnswerC "`
+	AnswerD    string `json:"AnswerD "`
+	Correct    string `json:"Correct"`
 }
 // 拿到问题和答案
 func Getonequestion() (Question, error) {
