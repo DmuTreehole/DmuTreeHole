@@ -15,7 +15,7 @@ func Router() {
 	//r.StaticFile("View/Photo.jpg", "View/Photo.jpg")
 	api := r.Group("/api")
 	{
-		api.POST("/question", handlers.Getquestion)
+		api.GET("/question", handlers.GetQuestion)
 		api.GET("/test", handlers.Test)
 		//接口层的代码书写在这
 		user := api.Group("/user")

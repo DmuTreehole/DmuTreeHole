@@ -2,7 +2,6 @@ package certification
 
 import (
 	DB "main/db"
-	"math/rand"
 )
 
 type Question struct {
@@ -15,22 +14,20 @@ type Question struct {
 	Correct    string `json:"Correct"`
 }
 // 拿到问题和答案
-func Getonequestion() (Question, error) {
-	que := Question{}
-	var num int
-	template := "select question_Id from Questions Order by question_Id"
-	stmt, _ := DB.DB().Query(template)
-	stmt.Scan(&num)
-	que.QuestionId = rand.Intn(num-1) + 1
-	template = "select question,answer1,answer2,answer3,answer4,correct from Questions Where question_Id = ?"
-	stmt, err := DB.DB().Query(template, que.QuestionId)
+func GetThreeQuestions() ([]Question, error) {
+	quelist := []Question{}
+	que:=Question{}
+	template := "select question,answer1,answer2,answer3,answer4,correct from Questions order by rand() limit 3"
+	rows, err := DB.DB().Query(template)
 	if err != nil {
-		return que, err
+		return quelist, err
 	}
-	stmt.Next()
-	err = stmt.Scan(&que.QuestionName,&que.AnswerA, &que.AnswerB, &que.AnswerC, &que.AnswerD, &que.Correct)
-	if err != nil {
-		return que, err
+	for rows.Next(){
+		err = rows.Scan(&que.QuestionName,&que.AnswerA, &que.AnswerB, &que.AnswerC, &que.AnswerD, &que.Correct)
+		quelist=append(quelist, que)
+		if err != nil {
+			return quelist, err
+		}
 	}
-	return que, nil
+	return quelist, nil
 }

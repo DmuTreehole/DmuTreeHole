@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func Getquestion(c *gin.Context) {
-	question, err := certification.Getonequestion()
+func GetQuestion(c *gin.Context) {
+	question, err := certification.GetThreeQuestions()
 	if err != nil {
 		c.JSON(400, gin.H{"message": "default"})
 	} else {
