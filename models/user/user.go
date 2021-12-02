@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	DB "main/db"
@@ -10,10 +11,10 @@ import (
 
 //用户登录和注册信息
 type User struct {
-	Id       int    `json:"User_Id"`
-	Username string `json:"User_name",form:"Username"`
-	Password string `json:"User_password",form:"Password"`
-	Email    string `json:"User_Email"`
+	Id       int    `json:"UserId"`
+	Username string `json:"UserName",form:"Username"`
+	Password string `json:"UserPassword",form:"Password"`
+	Email    string `json:"UserEmail"`
 }
 type auth struct {
 	Username string `valid:"Required;MaxSize(50)"`
@@ -55,10 +56,10 @@ func Login(Username, Password string) (int, error) {
 		log.Print(err)
 		return -1, err
 	}
-	if Tools.BcrPassWord(Password, Password) {
+	if Tools.BcrPassWord(Password, currentpassword) {
 		return id, nil
 	}
-	return id, err
+	return id, errors.New("Default")
 }
 
 //记录日志

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	post "main/models/post"
 	"net/http"
@@ -28,8 +27,8 @@ func GetAllComment(c *gin.Context) {
 //创建一个评论
 func CreateOneComment(c *gin.Context) {
 	var comment post.Comment
-	session := sessions.Default(c)
-	comment.Uid = session.Get("userid").(int)
+	//session := sessions.Default(c)
+	//comment.Uid = session.Get("userid").(int)
 	//绑定树洞编号
 	if err := c.ShouldBind(&comment); err != nil {
 		c.JSON(400, gin.H{"error": "Json绑定错误"})

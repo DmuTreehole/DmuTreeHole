@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -20,6 +21,7 @@ func GetDatetime() (datetime string) {
 func BcrPassWord(password string, password2 string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(password2), []byte(password))
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 	return true
