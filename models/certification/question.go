@@ -5,12 +5,12 @@ import (
 )
 
 type Question struct {
-	QuestionId int    `json:"QuestionIid"`
+	QuestionId int    `json:"QuestionId"`
 	QuestionName string `json:"QuestionName"`
 	AnswerA    string `json:"AnswerA"`
 	AnswerB    string `json:"AnswerB"`
-	AnswerC    string `json:"AnswerC "`
-	AnswerD    string `json:"AnswerD "`
+	AnswerC    string `json:"AnswerC"`
+	AnswerD    string `json:"AnswerD"`
 	Correct    string `json:"Correct"`
 }
 // 拿到问题和答案
