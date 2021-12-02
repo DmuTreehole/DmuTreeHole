@@ -15,6 +15,10 @@ type User struct {
 	Password string `json:"User_password",form:"Password"`
 	Email    string `json:"User_Email"`
 }
+type auth struct {
+	Username string `valid:"Required;MaxSize(50)"`
+	Password string `valid:"Required;MaxSize(50)"`
+}
 
 //用户注册
 func Register(User User) (int, bool) {
@@ -36,22 +40,25 @@ func Register(User User) (int, bool) {
 }
 
 //用户登录
-func Login(Username string) (int, string, bool) {
+func Login(Username, Password string) (int, error) {
 	template := "Select User_Id,User_Password From User Where User_Name=?"
 	rows, err := DB.DB().Query(template, Username)
 	if err != nil {
 		log.Print(err)
-		return -1, "SQL Err!", false
+		return -1, err
 	}
-	var password string
 	var id int
+	var currentpassword string
 	rows.Next()
-	err = rows.Scan(&id, &password)
+	err = rows.Scan(&id, &currentpassword)
 	if err != nil {
 		log.Print(err)
-		return -1, "login default", false
+		return -1, err
 	}
-	return id, password, true
+	if Tools.BcrPassWord(Password, Password) {
+		return id, nil
+	}
+	return id, err
 }
 
 //记录日志

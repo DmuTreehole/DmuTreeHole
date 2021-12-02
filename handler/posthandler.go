@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	post "main/models/post"
 	"net/http"
@@ -18,18 +17,15 @@ func GetAllPost(c *gin.Context) {
 //创建树洞
 func CreateOnePost(c *gin.Context) {
 	requestpost := post.Post{}
-	session := sessions.Default(c)
+	//session := sessions.Default(c)
 	//bind data
-	if c.ShouldBind(&requestpost) != nil {
-		c.JSON(400, gin.H{"error": "Json绑定错误"})
-		return
-	}
-	tmp := session.Get("userid")
-	if tmp == nil {
-		c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
-		return
-	}
-	requestpost.Uid = tmp.(int)
+	c.ShouldBind(&requestpost)
+	//tmp := session.Get("userid")
+	//if tmp == nil {
+	//	c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
+	//	return
+	//}
+	//requestpost.Uid = tmp.(int)
 	_, err := post.CreatePost(requestpost)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": "创建树洞失败"})

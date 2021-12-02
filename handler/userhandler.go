@@ -3,8 +3,11 @@ package handler
 //与用户相关的处理器函数
 import (
 	"fmt"
+	"github.com/astaxie/beego/validation"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"log"
+	"main/models"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
@@ -17,26 +20,56 @@ func Login(c *gin.Context) {
 
 //检查用户登录
 func LoginCheck(c *gin.Context) {
-	var message string
+	//var message string
+	//var user = UserModels.User{}
+	////Username := c.PostForm("Username")
+	////Password := c.PostForm("Password")
+	//c.ShouldBind(&user)
+	//Id, CurrentPassword, exist := UserModels.Login(user.Username)
+	//if exist {
+	//	ok := Utils.CobPassWord(user.Password, CurrentPassword)
+	//	if ok {
+	//		message = "Login Success"
+	//		setSessionById(c, Id)
+	//	} else {
+	//		message = "Wrong PassWord"
+	//	}
+	//} else {
+	//	message = "Account Not Exists"
+	//}
+	//UserModels.Log(Id, c.ClientIP(), message)
+	//c.JSON(http.StatusOK, gin.H{
+	//	"message": message,
+	//})
+	valid := validation.Validation{}
 	var user = UserModels.User{}
-	//Username := c.PostForm("Username")
-	//Password := c.PostForm("Password")
+	var msg string
 	c.ShouldBind(&user)
-	Id, CurrentPassword, exist := UserModels.Login(user.Username)
-	if exist {
-		ok := Utils.CobPassWord(user.Password, CurrentPassword)
-		if ok {
-			message = "Login Success"
-			setSessionById(c, Id)
+	var a = models.Auth{Username: user.Username, Password: user.Password}
+	var data = make(map[string]interface{})
+	ok, _ := valid.Valid(&a)
+	if ok {
+		id, err := UserModels.Login(a.Username, a.Password)
+		if err == nil {
+			token, err := Utils.CreateToken(a.Username, a.Password)
+			if err != nil {
+				msg = "TokenErr"
+				UserModels.Log(id, c.ClientIP(), "CreateTokenErr")
+			} else {
+				msg = "Success"
+				data["token"] = token
+			}
 		} else {
-			message = "Wrong PassWord"
+			msg = "AuthErr"
 		}
 	} else {
-		message = "Account Not Exists"
+		for _, err := range valid.Errors {
+			log.Println(err.Key, err.Message)
+		}
 	}
-	UserModels.Log(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
-		"message": message,
+		"message": msg,
+		"data":    data,
 	})
 }
 
@@ -48,6 +81,7 @@ func Register(c *gin.Context) {
 //检查注册
 func RegisterCheck(c *gin.Context) {
 	var message = "Create Default"
+	var data = make(map[string]interface{})
 	var userinfo = UserModels.User{}
 	//UserName := c.PostForm("Username")
 	//Password := c.PostForm("Password")
@@ -61,7 +95,13 @@ func RegisterCheck(c *gin.Context) {
 	Id, ok := UserModels.Register(userinfo)
 	if ok {
 		message = "Create Success"
-		setSessionById(c, Id)
+		token, err := Utils.CreateToken(userinfo.Username, userinfo.Password)
+		if err != nil {
+			message += "token err"
+		} else {
+			data["token"] = token
+		}
+		//setSessionById(c, Id)
 	} else {
 		Id = -1
 		message = "Create Default"
@@ -69,6 +109,7 @@ func RegisterCheck(c *gin.Context) {
 	UserModels.Log(Id, c.ClientIP(), message)
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
+		"data":    data,
 	})
 }
 
@@ -90,10 +131,10 @@ func ShowUserProfile(c *gin.Context) {
 	session := sessions.Default(c)
 	userinfo.Username = session.Get("username").(string)
 
-	id, _, ok := UserModels.Login(userinfo.Username)
-	if !ok {
+	id, err := UserModels.Login(userinfo.Username, userinfo.Password)
+	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "err",
+			"message": err.Error(),
 		})
 	} else {
 		userprofile, ok := UserModels.QueryUser(id)

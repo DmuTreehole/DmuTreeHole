@@ -5,6 +5,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	handlers "main/handler"
+	"main/middleware"
 )
 
 func Router() {
@@ -17,6 +18,7 @@ func Router() {
 	{
 		api.POST("/question", handlers.Getquestion)
 		api.GET("/test", handlers.Test)
+		//api.POST("/auth",handlers.GetAuth)
 		//接口层的代码书写在这
 		user := api.Group("/user")
 		{
@@ -31,14 +33,14 @@ func Router() {
 		post := api.Group("/post")
 		{
 			post.GET("getallpost/:page", handlers.GetAllPost)
-			post.POST("createonepost", handlers.CreateOnePost)
-			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
+			post.POST("createonepost", middleware.Jwt(), handlers.CreateOnePost)
+			post.GET("deleteonepost/:id", middleware.Jwt(), handlers.DeleteOnePost)
 		}
 		comment := api.Group("/comment")
 		{
 			comment.GET("getallcomment/:id", handlers.GetAllComment)
-			comment.POST("createonecomment", handlers.CreateOneComment)
-			comment.GET("deletecomment/:id", handlers.DeleteOneComment)
+			comment.POST("createonecomment", middleware.Jwt(), handlers.CreateOneComment)
+			comment.GET("deletecomment/:id", middleware.Jwt(), handlers.DeleteOneComment)
 		}
 	}
 	r.Run(":8081")

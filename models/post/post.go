@@ -9,7 +9,7 @@ import (
 
 type Post struct {
 	Id      int    `json:"PostId",form:"PostId"`
-	Uid     int    `json:"UserId"`
+	Uid     int    `json:"UserId",form:"UserId"`
 	Content string `json:"Content",form:"Content"`
 }
 
