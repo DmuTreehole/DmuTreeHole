@@ -72,36 +72,44 @@ func RegisterCheck(c *gin.Context) {
 	})
 }
 
-func ChangeUserProfile(c *gin.Context) {
+//json UserSex,User_NickName,User_Addr
+func CreateUserProfile(c *gin.Context) {
 	var userprofile UserModels.Userprofile
-	c.ShouldBindJSON(&userprofile)
+	c.ShouldBind(&userprofile)
 	session := sessions.Default(c)
 	userprofile.Id = session.Get("userid").(int)
-	if !UserModels.UpdateUser(userprofile) {
-		c.JSON(http.StatusOK, gin.H{"message": "ok"})
+	err := UserModels.CreateUser(userprofile)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "default"})
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
+//json UserSex,User_NickName,User_Addr
+func ChangeUserProfile(c *gin.Context) {
+	var userprofile UserModels.Userprofile
+	c.ShouldBind(&userprofile)
+	session := sessions.Default(c)
+	userprofile.Id = session.Get("userid").(int)
+	err := UserModels.UpdateUser(userprofile)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+//json UserId
 //显示信息
 func ShowUserProfile(c *gin.Context) {
 	var userinfo UserModels.User
-
-	session := sessions.Default(c)
-	userinfo.Username = session.Get("username").(string)
-
-	id, _, ok := UserModels.Login(userinfo.Username)
-	if !ok {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "err",
-		})
-	} else {
-		userprofile, ok := UserModels.QueryUser(id)
-		if !ok {
-			c.JSON(http.StatusOK, gin.H{"message": "default"})
-		}
-		c.JSON(http.StatusOK, userprofile)
+	c.ShouldBind(&userinfo)
+	userprofile, err := UserModels.QueryUser(userinfo.Id)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+		return
 	}
+	c.JSON(http.StatusOK, userprofile)
 }
 
 func GetUserName(c *gin.Context) {

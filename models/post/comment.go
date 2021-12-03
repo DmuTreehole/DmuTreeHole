@@ -11,10 +11,11 @@ type Comment struct {
 	Pid     int    `json:"PostId",form:"PostId"`
 	Uid     int    `json:"UserId"`
 	Content string `json:"Content",form:"Content"`
+	Page    int    `json:"Page"`
 }
 type Comment_view struct {
-	Id       int `json:"CommentId"`
-	Uid      int `json:"UserId"`
+	Id       int    `json:"CommentId"`
+	Uid      int    `json:"UserId"`
 	Pid      int    `json:"PostId"`
 	Username string `json:"Username"`
 	Updated  string
@@ -41,17 +42,17 @@ func CreateComment(comment Comment) (int64, error) {
 }
 
 //查看评论
-func ShowComment(pid int) ([]Comment_view, error) {
+func ShowComment(comment Comment) ([]Comment_view, error) {
 	//创建更改时间，评论内容，发评论人,两表查询
-	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
-	rows, err := DB.DB().Query(template, pid)
+	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id Limit 5 Offset ?"
+	rows, err := DB.DB().Query(template, comment.Pid, (comment.Page-1)*5)
 	if err != nil {
 		log.Print(err)
 	}
 	allcomment := []Comment_view{}
 	for rows.Next() {
 		comment_view := Comment_view{}
-		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content,&comment_view.Id)
+		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content, &comment_view.Id)
 		if err != nil {
 			log.Print(err)
 		}

@@ -17,8 +17,9 @@ func GetAllComment(c *gin.Context) {
 	//	c.JSON(400, gin.H{"error": "Json绑定错误"})
 	//}
 	//response,_:=post.ShowComment(pid.Id)
-	id, _ := strconv.Atoi(c.Param("id"))
-	response, err := post.ShowComment(id)
+	var comment post.Comment
+	c.ShouldBind(&comment) //Uid 和 page
+	response, err := post.ShowComment(comment)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "default"})
 	}

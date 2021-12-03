@@ -27,6 +27,9 @@ func Router() {
 			user.POST("register", handlers.RegisterCheck)
 			user.POST("banusers", handlers.BanUsers)
 			user.POST("getUserName", handlers.GetUserName)
+			user.POST("createUserProfile", handlers.CreateUserProfile)
+			user.POST("showUserProfile", handlers.ShowUserProfile)
+			user.POST("changeUserProfile", handlers.ChangeUserProfile)
 		}
 		post := api.Group("/post")
 		{

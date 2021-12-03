@@ -14,60 +14,47 @@ type Userprofile struct {
 }
 
 //创建用户个人信息
-func CreateUser(pro Userprofile) (int, bool) {
-
-	template := "Insert into UserProfile Values (?,?,?,?),"
-	stmt, err := DB.DB().Prepare(template)
-	if err != nil {
-		log.Print(err)
-		return -1, false
-	}
-	res, err := stmt.Exec(pro.Id, pro.Nickname, pro.Sex, pro.Addr)
-	if err != nil {
-		log.Print(err)
-		return -1, false
-	}
-	id, _ := res.LastInsertId()
-	return int(id), true
-
+func CreateUser(pro Userprofile) error {
+	template := "Insert into Userprofile Set User_Id=?,User_NickName=?,User_Sex=?,User_Addr=?"
+	//stmt, err := DB.DB().Prepare(template)
+	//if err != nil {
+	//	log.Print(err)
+	//	return err
+	//}
+	//res, err := stmt.Exec(pro.Id, pro.Nickname, pro.Sex, pro.Addr)
+	//if err != nil {
+	//	log.Print(err)
+	//	return err
+	//}
+	//return nil
+	_, err := DB.DB().Query(template, pro.Id, pro.Nickname, pro.Sex, pro.Addr)
+	return err
 }
 
 //更改用户个人信息
-func UpdateUser(pro Userprofile) bool {
+func UpdateUser(pro Userprofile) error {
 
-	template := "UPDATE UserProfile SET Nickname=?,Sex=?,Addr=? Where Id=?"
-	stmt, err := DB.DB().Prepare(template)
-	if err != nil {
-		log.Print(err)
-		//return -1, false
-		return false
-	}
-	_, err = stmt.Exec(pro.Nickname, pro.Sex, pro.Addr, pro.Id)
-	if err != nil {
-		log.Print(err)
-		//return -1, false
-		return false
-	}
+	template := "UPDATE Userprofile SET User_Nickname=?,User_Sex=?,User_Addr=? Where User_Id=?"
+	_, err := DB.DB().Query(template, pro.Nickname, pro.Sex, pro.Addr, pro.Id)
 	//i, _ := res.LastInsertId() ?????? update 还查id?
 	//return int(i), true
-	return true
+	return err
 }
 
 // 通过id 查询信息
-func QueryUser(id int) (Userprofile, bool) {
-
+func QueryUser(id int) (Userprofile, error) {
 	var pro Userprofile
-	template := "Select * from UserProfile where Id=?,"
+	template := "Select User_Id,User_Nickname,User_Sex,User_Addr from Userprofile where User_Id=?"
 	rows, err := DB.DB().Query(template, id)
 	if err != nil {
 		log.Print(err)
-		return pro, false
+		return pro, err
 	}
 	rows.Next()
-	err = rows.Scan(pro.Id, pro.Nickname, pro.Sex, pro.Addr)
+	err = rows.Scan(&pro.Id, &pro.Nickname, &pro.Sex, &pro.Addr)
 	if err != nil {
 		log.Print(err)
-		return pro, false
+		return pro, err
 	}
-	return pro, true
+	return pro, err
 }
