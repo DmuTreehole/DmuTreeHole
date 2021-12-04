@@ -51,8 +51,8 @@ func DeleteOnePost(c *gin.Context) {
 func GetPostById(c *gin.Context) {
 	var info post.PagePost
 	c.ShouldBind(&info)
-	//session := sessions.Default(c)
-	//info.Id = session.Get("userid").(int)
+	session := sessions.Default(c)
+	info.Id = session.Get("userid").(int)
 	allPost, err := post.QueryPostById(info)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": err})
