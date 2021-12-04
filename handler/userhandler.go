@@ -3,11 +3,12 @@ package handler
 //与用户相关的处理器函数
 import (
 	"fmt"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 //用户登录显示的页面
@@ -15,7 +16,14 @@ func Login(c *gin.Context) {
 	c.HTML(http.StatusOK, "demo.html", gin.H{})
 }
 
-//检查用户登录
+// @Summary 验证用户名和密码
+// @Description 检查用户登陆，验证用户名和密码
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Params body body UserModels.User "用户请求体"
+// @Router /api/user/logincheck [post]
 func LoginCheck(c *gin.Context) {
 	var message string
 	var user = UserModels.User{}
@@ -45,18 +53,17 @@ func Register(c *gin.Context) {
 	c.HTML(http.StatusOK, "register.html", gin.H{})
 }
 
-//检查注册
+// @Summary 用户注册
+// @Description 用户注册
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Params body body UserModels.User "用户请求体"
+// @Router /api/user/registercheck [post]
 func RegisterCheck(c *gin.Context) {
 	var message = "Create Default"
 	var userinfo = UserModels.User{}
-	//UserName := c.PostForm("Username")
-	//Password := c.PostForm("Password")
-	//UserEmail := c.PostForm("Email")
-	//userinfo := UserModels.User{
-	//  Username:  UserName,
-	//  Password: Password,
-	//  Email:    UserEmail,
-	//}
 	c.ShouldBind(&userinfo)
 	Id, ok := UserModels.Register(userinfo)
 	if ok {
@@ -72,7 +79,6 @@ func RegisterCheck(c *gin.Context) {
 	})
 }
 
-//json UserSex,User_NickName,User_Addr
 func CreateUserProfile(c *gin.Context) {
 	var userprofile UserModels.Userprofile
 	c.ShouldBind(&userprofile)
@@ -86,7 +92,6 @@ func CreateUserProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
-//json UserSex,User_NickName,User_Addr
 func ChangeUserProfile(c *gin.Context) {
 	var userprofile UserModels.Userprofile
 	c.ShouldBind(&userprofile)
@@ -99,8 +104,6 @@ func ChangeUserProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
-//json UserId
-//显示信息
 func ShowUserProfile(c *gin.Context) {
 	var userinfo UserModels.User
 	c.ShouldBind(&userinfo)
@@ -112,6 +115,14 @@ func ShowUserProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, userprofile)
 }
 
+// @Summary 得到用户名称
+// @Description 通过id得到用户名称
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Params body body UserModels.User "用户请求体"
+// @Router /api/user/getusername [post]
 func GetUserName(c *gin.Context) {
 	var user = UserModels.User{}
 	c.ShouldBind(&user)

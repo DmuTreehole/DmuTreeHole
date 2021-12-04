@@ -1,14 +1,19 @@
 package router
 
 import (
+	docs"main/docs"
+	handlers "main/handler"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	handlers "main/handler"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func Router() {
 	r := gin.Default()
+	docs.SwaggerInfo.BasePath="/api"
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session", store))
 	r.LoadHTMLGlob("templates/*.html")
@@ -36,7 +41,7 @@ func Router() {
 			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
-			post.POST("getPostById", handlers.GetPostById)
+			post.POST("getpostbyId", handlers.GetPostById)
 		}
 		comment := api.Group("/comment")
 		{
@@ -45,5 +50,6 @@ func Router() {
 			comment.GET("deletecomment/:id", handlers.DeleteOneComment)
 		}
 	}
+	r.GET("swagger/*any",ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run(":8081")
 }

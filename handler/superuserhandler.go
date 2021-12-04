@@ -15,6 +15,14 @@ type BanedRequest struct{
 目前假设管理员id为1
 */
 //管理员对应的handler，用于封禁用户
+// @Summary 管理员封禁用户
+// @Description 管理员封禁用户
+// @Success 200 
+// @Accept application/json
+// @Produce application/json
+// @Param body body BanedRequest true "封禁请求体"
+// @Tags 用户相关接口
+// @Router /api/user/banusers [post]
 func BanUsers(c*gin.Context)  {
 	session:=sessions.Default(c)
 	if IssuperUser:=session.Get("userid").(int);IssuperUser!=1{
@@ -34,7 +42,13 @@ func BanUsers(c*gin.Context)  {
 	}
 	c.JSON(200,gin.H{"msg":message})
 }
-//展示已经被ban的用户
+// @Summary 展示已经被ban的用户
+// @Description 展示已经被ban的用户
+// @Success 200 
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Router /api/user/showbanedlist [get]
 func ShowBannedList(c*gin.Context){
 	session:=sessions.Default(c)
 	if IssuperUser:=session.Get("userid").(int);IssuperUser!=1{

@@ -1,4 +1,260 @@
+definitions:
+  handler.BanedRequest:
+    properties:
+      post_id:
+        type: integer
+      reason:
+        type: string
+    type: object
+  post.Comment:
+    properties:
+      Content:
+        type: string
+      Page:
+        type: integer
+      PostId:
+        type: integer
+      UserId:
+        type: integer
+    type: object
+  post.PagePost:
+    properties:
+      Page:
+        type: integer
+      UserId:
+        type: integer
+    type: object
+  post.Post:
+    properties:
+      Content:
+        type: string
+      PostId:
+        type: integer
+      UserId:
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /api/comment/createonecomment:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个评论
+      parameters:
+      - description: 评论请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/post.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 创建一个评论
+      tags:
+      - 评论相关接口
+  /api/comment/deletecomment/:id:
+    get:
+      consumes:
+      - application/json
+      description: 删除一个评论
+      parameters:
+      - description: commentid
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除一个评论
+      tags:
+      - 评论相关接口
+  /api/comment/deleteonepost/:id:
+    get:
+      consumes:
+      - application/json
+      description: 删除一个树洞
+      parameters:
+      - description: postid
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除一个树洞
+      tags:
+      - 树洞相关接口
+  /api/comment/getallcomment/:id:
+    get:
+      consumes:
+      - application/json
+      description: 打开树洞下面所有的评论
+      parameters:
+      - description: postid
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 打开树洞下面所有的评论
+      tags:
+      - 评论相关接口
+  /api/post/createonepost:
+    post:
+      consumes:
+      - application/json
+      description: 创建一个树洞
+      parameters:
+      - description: 树洞请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/post.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 创建一个树洞
+      tags:
+      - 树洞相关接口
+  /api/post/getallpost/:page:
+    get:
+      consumes:
+      - application/json
+      description: 查看所有树洞
+      parameters:
+      - description: 页数
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 查看所有树洞
+      tags:
+      - 树洞相关接口
+  /api/post/getpostbyid:
+    post:
+      consumes:
+      - application/json
+      description: 通过userid查树洞
+      parameters:
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/post.PagePost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 通过userid查树洞
+      tags:
+      - 树洞相关接口
+  /api/question:
+    get:
+      consumes:
+      - application/json
+      description: 查看注册问题，一次三个随机问题
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 查看注册问题
+      tags:
+      - 树洞相关接口
+  /api/user/banusers:
+    post:
+      consumes:
+      - application/json
+      description: 管理员封禁用户
+      parameters:
+      - description: 封禁请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.BanedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 管理员封禁用户
+      tags:
+      - 用户相关接口
+  /api/user/getusername:
+    post:
+      consumes:
+      - application/json
+      description: 通过id得到用户名称
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 得到用户名称
+      tags:
+      - 用户相关接口
+  /api/user/logincheck:
+    post:
+      consumes:
+      - application/json
+      description: 检查用户登陆，验证用户名和密码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 验证用户名和密码
+      tags:
+      - 用户相关接口
+  /api/user/registercheck:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 用户注册
+      tags:
+      - 用户相关接口
+  /api/user/showbanedlist:
+    get:
+      consumes:
+      - application/json
+      description: 展示已经被ban的用户
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 展示已经被ban的用户
+      tags:
+      - 用户相关接口
 swagger: "2.0"
