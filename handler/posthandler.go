@@ -48,6 +48,18 @@ func DeleteOnePost(c *gin.Context) {
 	c.JSON(200, gin.H{"msg": "树洞删除成功"})
 }
 
+func GetPostById(c *gin.Context) {
+	var info post.PagePost
+	c.ShouldBind(&info)
+	//session := sessions.Default(c)
+	//info.Id = session.Get("userid").(int)
+	allPost, err := post.QueryPostById(info)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err})
+		return
+	}
+	c.JSON(http.StatusOK, allPost)
+}
 func Test(c *gin.Context) {
 	c.HTML(http.StatusOK, "test.html", nil)
 }

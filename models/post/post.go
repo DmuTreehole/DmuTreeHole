@@ -14,7 +14,8 @@ type Post struct {
 }
 
 type PagePost struct {
-	Page int `json:"page"`
+	Id   int `json:"UserId"`
+	Page int `json:"Page"`
 }
 
 type view struct {
@@ -79,4 +80,24 @@ func DeletePost(post_id int) error {
 		return err
 	}
 	return nil
+}
+
+//按userid查帖子
+func QueryPostById(info PagePost) ([]view, error) {
+	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
+		"where Post.User_Id=User.User_Id And Post.User_Id = ? Order By Created Desc Limit 5 Offset ?"
+	rows, err := DB.DB().Query(template, info.Id, (info.Page-1)*5)
+	if err != nil {
+		return nil, err
+	}
+	var allpost = []view{}
+	var post = view{}
+	for rows.Next() {
+		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username)
+		if err != nil {
+			return nil, err
+		}
+		allpost = append(allpost, post)
+	}
+	return allpost, nil
 }

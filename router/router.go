@@ -36,6 +36,7 @@ func Router() {
 			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
+			post.POST("getPostById", handlers.GetPostById)
 		}
 		comment := api.Group("/comment")
 		{
