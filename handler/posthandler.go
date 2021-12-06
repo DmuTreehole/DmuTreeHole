@@ -10,7 +10,7 @@ import (
 
 // @Summary 查看所有树洞
 // @Description 查看所有树洞
-// @Success 200 
+// @Success 200
 // @Accept application/json
 // @Produce application/json
 // @Param id path int true "页数"
@@ -24,7 +24,7 @@ func GetAllPost(c *gin.Context) {
 
 // @Summary 创建一个树洞
 // @Description 创建一个树洞
-// @Success 200 
+// @Success 200
 // @Accept application/json
 // @Produce application/json
 // @Param body body post.Post true "树洞请求体"
@@ -51,9 +51,10 @@ func CreateOnePost(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"msg": "树洞创建成功"})
 }
+
 // @Summary 删除一个树洞
 // @Description 删除一个树洞
-// @Success 200 
+// @Success 200
 // @Accept application/json
 // @Produce application/json
 // @Param id path int true "postid"
@@ -67,9 +68,10 @@ func DeleteOnePost(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"msg": "树洞删除成功"})
 }
+
 // @Summary 通过userid查树洞
 // @Description 通过userid查树洞
-// @Success 200 
+// @Success 200
 // @Accept application/json
 // @Produce application/json
 // @Param body body post.PagePost true "请求体"
@@ -89,4 +91,25 @@ func GetPostById(c *gin.Context) {
 }
 func Test(c *gin.Context) {
 	c.HTML(http.StatusOK, "test.html", nil)
+}
+
+// @Summary 通过部分内容查树洞
+// @Description 通过部分内容查树洞
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Param body body Content.Content true "树洞请求体"
+// @Tags 树洞相关接口
+// @Router /api/post/Search [Post]
+func SearchPostByContent(c *gin.Context) {
+	var content = post.Content{}
+	var data = make(map[string]interface{})
+	c.BindJSON(&content)
+	result, err := post.Query(content)
+	if err != nil {
+		data["message"] = err.Error()
+	} else {
+		data["data"] = result
+	}
+	c.JSON(http.StatusOK, data)
 }

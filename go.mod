@@ -7,6 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-ini/ini v1.66.2
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
+	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.6
 	golang.org/x/crypto v0.0.0-20211202192323-5770296d904e
 )
@@ -34,8 +36,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
-	github.com/swaggo/gin-swagger v1.3.3 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	golang.org/x/net v0.0.0-20211203184738-4852103109b8 // indirect
 	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect

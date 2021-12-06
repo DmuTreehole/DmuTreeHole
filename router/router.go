@@ -1,7 +1,7 @@
 package router
 
 import (
-	docs"main/docs"
+	docs "main/docs"
 	handlers "main/handler"
 
 	"github.com/gin-contrib/sessions"
@@ -13,7 +13,7 @@ import (
 
 func Router() {
 	r := gin.Default()
-	docs.SwaggerInfo.BasePath="/api"
+	docs.SwaggerInfo.BasePath = "/api"
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session", store))
 	r.LoadHTMLGlob("templates/*.html")
@@ -31,10 +31,10 @@ func Router() {
 			user.POST("login", handlers.LoginCheck)
 			user.POST("register", handlers.RegisterCheck)
 			user.POST("banusers", handlers.BanUsers)
-			user.POST("getUserName", handlers.GetUserName)
-			user.POST("createUserProfile", handlers.CreateUserProfile)
-			user.POST("showUserProfile", handlers.ShowUserProfile)
-			user.POST("changeUserProfile", handlers.ChangeUserProfile)
+			user.POST("getusername", handlers.GetUserName)
+			user.POST("createuserprofile", handlers.CreateUserProfile)
+			user.POST("showuserprofile", handlers.ShowUserProfile)
+			user.POST("changeuserprofile", handlers.ChangeUserProfile)
 		}
 		post := api.Group("/post")
 		{
@@ -42,6 +42,7 @@ func Router() {
 			post.POST("createonepost", handlers.CreateOnePost)
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
 			post.POST("getpostbyId", handlers.GetPostById)
+			post.POST("search", handlers.SearchPostByContent)
 		}
 		comment := api.Group("/comment")
 		{
@@ -50,6 +51,6 @@ func Router() {
 			comment.GET("deletecomment/:id", handlers.DeleteOneComment)
 		}
 	}
-	r.GET("swagger/*any",ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run(":8081")
 }
