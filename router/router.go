@@ -1,14 +1,13 @@
 package router
 
 import (
-	docs "main/docs"
-	handlers "main/handler"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	docs "main/docs"
+	handlers "main/handler"
 )
 
 func Router() {
@@ -17,7 +16,7 @@ func Router() {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("session", store))
 	r.LoadHTMLGlob("templates/*.html")
-	//r.StaticFile("View/Photo.jpg", "View/Photo.jpg")
+	//r.StaticFS("/Icon",http.Dir("./Icon"))
 	api := r.Group("/api")
 	{
 		api.GET("/question", handlers.GetQuestion)
@@ -35,6 +34,8 @@ func Router() {
 			user.POST("createuserprofile", handlers.CreateUserProfile)
 			user.POST("showuserprofile", handlers.ShowUserProfile)
 			user.POST("changeuserprofile", handlers.ChangeUserProfile)
+			user.POST("getusericon", handlers.ShowUserIcon)
+			// user.POST("uploadusericon",headers.UploadUserIcon)
 		}
 		post := api.Group("/post")
 		{

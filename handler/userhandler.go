@@ -144,3 +144,38 @@ func setSessionById(c *gin.Context, Id int) {
 	session.Set("userid", Id)
 	session.Save()
 }
+
+// @Summary 获取用户头像
+// @Description 获取用户头像
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Params body body UserModels.User "用户请求体"
+// @Router /api/user/getusername [post]
+func ShowUserIcon(c *gin.Context) {
+	var user UserModels.User
+	c.ShouldBind(&user)
+	filename, err := UserModels.GetUserIcon(user.Id)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+		return
+	}
+	filepath := `./Icon/` + filename + `.jpg`
+	c.Writer.Header().Add("content-Disposition", fmt.Sprintf("attachment;filename=%s", filename))
+	//c.Writer.Header().Set("content-Type","application/jpeg")
+	c.File(filepath)
+	//c.JSON(http.StatusOK,gin.H{"message":"ok"})
+}
+
+// @Summary 得到用户名称
+// @Description 通过id得到用户名称
+// @Success 200
+// @Accept application/json
+// @Produce application/json
+// @Tags 用户相关接口
+// @Params body body UserModels.User "用户请求体"
+// @Router /api/user/getusername [post]
+func UploadUserIcon(c *gin.Context) {
+
+}

@@ -5,6 +5,8 @@ import (
 	"log"
 	DB "main/db"
 	Tools "main/utils"
+	"math/rand"
+	"strconv"
 	// DB "main/db"
 )
 
@@ -84,4 +86,26 @@ func GetUserNameById(Id int) (string, error) {
 		return "", err
 	}
 	return userName, nil
+}
+
+//查询用户头像
+func GetUserIcon(Id int) (string, error) {
+	template := `Select Icon_Name From User Where User_Id =?`
+	rows, err := DB.DB().Query(template, Id)
+	rows.Next()
+	var filename string
+	err = rows.Scan(&filename)
+	if err != nil {
+		return "", err
+	}
+	if filename != "nil" {
+		return filename, nil
+	}
+	template = `Update User Set Icon_Name=? Where User_Id=?`
+	iconName := "rand" + strconv.Itoa(rand.Int()%9+1)
+	_, err = DB.DB().Query(template, iconName, Id)
+	if err != nil {
+		return "", err
+	}
+	return iconName, nil
 }
