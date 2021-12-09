@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	post "main/models/post"
@@ -26,11 +27,8 @@ func GetAllComment(c *gin.Context) {
 	//}
 	//response,_:=post.ShowComment(pid.Id)
 	var comment post.Comment
-	err := c.ShouldBind(&comment) //Uid 和 page
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
-		return
-	}
+	c.ShouldBind(&comment) //Uid 和 page
+	fmt.Println(comment)
 	response, err := post.ShowComment(comment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
@@ -63,6 +61,7 @@ func CreateOneComment(c *gin.Context) {
 	err := post.CreateComment(comment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": Utils.CreateCommentSuccess})
 }

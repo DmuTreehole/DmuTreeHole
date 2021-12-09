@@ -8,9 +8,9 @@ import (
 )
 
 type Comment struct {
-	Pid     int    `json:"PostId",form:"PostId"`
+	Pid     int    `json:"PostId"`
 	Uid     int    `json:"UserId"`
-	Content string `json:"Content",form:"Content"`
+	Content string `json:"Content"`
 	Page    int    `json:"Page"`
 }
 type Comment_view struct {
