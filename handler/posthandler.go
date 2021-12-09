@@ -105,7 +105,7 @@ func Test(c *gin.Context) {
 // @Success 200
 // @Accept application/json
 // @Produce application/json
-// @Param body body Content.Content true "树洞请求体"
+// @Param body body post.Content true "树洞请求体"
 // @Tags 树洞相关接口
 // @Router /api/post/Search [Post]
 func SearchPostByContent(c *gin.Context) {
