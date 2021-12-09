@@ -11,7 +11,6 @@ type Comment struct {
 	Pid     int    `json:"PostId"`
 	Uid     int    `json:"UserId"`
 	Content string `json:"Content"`
-	Page    int    `json:"Page"`
 }
 type Comment_view struct {
 	Id       int    `json:"CommentId"`
@@ -43,8 +42,8 @@ func CreateComment(comment Comment) error {
 //查看评论
 func ShowComment(comment Comment) ([]Comment_view, error) {
 	//创建更改时间，评论内容，发评论人,两表查询
-	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id Limit 5 Offset ?"
-	rows, err := DB.DB().Query(template, comment.Pid, (comment.Page-1)*5)
+	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
+	rows, err := DB.DB().Query(template, comment.Pid)
 	if err != nil {
 		return nil, err
 	}
