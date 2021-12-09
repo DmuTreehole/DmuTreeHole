@@ -174,7 +174,7 @@ func ShowUserIcon(c *gin.Context) {
 		return
 	}
 	filepath := `./Icon/` + filename + `.jpg`
-	c.Writer.Header().Add("content-Disposition", fmt.Sprintf("attachment;filename=%s", filename))
+	//c.Writer.Header().Add("content-Disposition", fmt.Sprintf("attachment;filename=%s", filename))
 	//c.Writer.Header().Set("content-Type","application/jpeg")
 	c.File(filepath)
 	//c.JSON(http.StatusOK,gin.H{"message":"ok"})
