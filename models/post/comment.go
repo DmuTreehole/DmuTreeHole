@@ -24,21 +24,20 @@ type Comment_view struct {
 }
 
 //创建评论
-func CreateComment(comment Comment) (int64, error) {
+func CreateComment(comment Comment) error {
 	template := "Insert Comment Set Created=?,User_Id=?,Post_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
-		log.Print(err)
+		return err
 	}
 	created := Tools.GetDatetime()
 	updated := created
 	fmt.Println(comment)
-	result, err := stmt.Exec(created, comment.Uid, comment.Pid, updated, comment.Content)
+	_, err = stmt.Exec(created, comment.Uid, comment.Pid, updated, comment.Content)
 	if err != nil {
-		log.Print(err)
+		return err
 	}
-	id, _ := result.LastInsertId()
-	return id, err
+	return nil
 }
 
 //查看评论
@@ -47,14 +46,14 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, comment.Pid, (comment.Page-1)*5)
 	if err != nil {
-		log.Print(err)
+		return nil, err
 	}
 	allcomment := []Comment_view{}
 	for rows.Next() {
 		comment_view := Comment_view{}
 		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content, &comment_view.Id)
 		if err != nil {
-			log.Print(err)
+			return nil, err
 		}
 		allcomment = append(allcomment, comment_view)
 	}

@@ -6,6 +6,7 @@ import (
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -25,27 +26,34 @@ func Login(c *gin.Context) {
 // @Params body body UserModels.User "用户请求体"
 // @Router /api/user/logincheck [post]
 func LoginCheck(c *gin.Context) {
-	var message string
 	var user = UserModels.User{}
+	var code int
 	//Username := c.PostForm("Username")
 	//Password := c.PostForm("Password")
-	c.ShouldBind(&user)
-	Id, CurrentPassword, exist := UserModels.Login(user.Username)
-	if exist {
+	err := c.ShouldBind(&user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
+		return
+	}
+	fmt.Println(user)
+	Id, CurrentPassword, err := UserModels.Login(user.Username)
+	if err != nil {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
 		if ok {
-			message = "Login Success"
 			setSessionById(c, Id)
+			code = Utils.LoginSuccess
 		} else {
-			message = "Wrong PassWord"
+			code = Utils.PasswordWrong
 		}
 	} else {
-		message = "Account Not Exists"
+		code = Utils.UserNameNotExists
 	}
-	UserModels.Log(Id, c.ClientIP(), message)
-	c.JSON(http.StatusOK, gin.H{
-		"message": message,
-	})
+	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
+	if code == Utils.LoginSuccess {
+		c.JSON(http.StatusOK, gin.H{"code": code})
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{"code": code})
 }
 
 //注册界面
@@ -62,21 +70,22 @@ func Register(c *gin.Context) {
 // @Params body body UserModels.User "用户请求体"
 // @Router /api/user/registercheck [post]
 func RegisterCheck(c *gin.Context) {
-	var message = "Create Default"
+	var code int
 	var userinfo = UserModels.User{}
 	c.ShouldBind(&userinfo)
-	Id, ok := UserModels.Register(userinfo)
-	if ok {
-		message = "Create Success"
+	Id, err := UserModels.Register(userinfo)
+	if err != nil {
+		code = Utils.RegisterSuccess
 		setSessionById(c, Id)
 	} else {
-		Id = -1
-		message = "Create Default"
+		code = Utils.UserNameIsExists
 	}
-	UserModels.Log(Id, c.ClientIP(), message)
-	c.JSON(http.StatusOK, gin.H{
-		"message": message,
-	})
+	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
+	if code == Utils.RegisterSuccess {
+		c.JSON(http.StatusOK, gin.H{"code": code})
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{"code": code})
 }
 
 func CreateUserProfile(c *gin.Context) {
@@ -129,7 +138,7 @@ func GetUserName(c *gin.Context) {
 	username, err := UserModels.GetUserNameById(user.Id)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{"message": "dafault"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserNameNotExists})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"username": username})
@@ -158,7 +167,7 @@ func ShowUserIcon(c *gin.Context) {
 	c.ShouldBind(&user)
 	filename, err := UserModels.GetUserIcon(user.Id)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserIconNotFound})
 		return
 	}
 	filepath := `./Icon/` + filename + `.jpg`

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	post "main/models/post"
+	Utils "main/utils"
 	"net/http"
 	"strconv"
 )
@@ -35,21 +36,21 @@ func CreateOnePost(c *gin.Context) {
 	session := sessions.Default(c)
 	//bind data
 	if c.ShouldBind(&requestpost) != nil {
-		c.JSON(400, gin.H{"error": "Json绑定错误"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
 		return
 	}
 	tmp := session.Get("userid")
 	if tmp == nil {
-		c.JSON(http.StatusOK, gin.H{"message": "NotLogin"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.NotLogin})
 		return
 	}
 	requestpost.Uid = tmp.(int)
 	_, err := post.CreatePost(requestpost)
 	if err != nil {
-		c.JSON(400, gin.H{"msg": "创建树洞失败"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.CreatePostDefault})
 		return
 	}
-	c.JSON(200, gin.H{"msg": "树洞创建成功"})
+	c.JSON(http.StatusOK, gin.H{"code": Utils.CreatePostSuccess})
 }
 
 // @Summary 删除一个树洞
@@ -64,9 +65,9 @@ func DeleteOnePost(c *gin.Context) {
 	id := c.Params.ByName("id")
 	pid, _ := strconv.Atoi(id)
 	if err := post.DeletePost(pid); err != nil {
-		c.JSON(400, gin.H{"msg": "树洞删除失败"})
+		c.JSON(400, gin.H{"code": Utils.DeletePostDefault})
 	}
-	c.JSON(200, gin.H{"msg": "树洞删除成功"})
+	c.JSON(200, gin.H{"code": Utils.DeletePostSuccess})
 }
 
 // @Summary 通过userid查树洞
@@ -79,12 +80,18 @@ func DeleteOnePost(c *gin.Context) {
 // @Router /api/post/getpostbyid [post]
 func GetPostById(c *gin.Context) {
 	var info post.PagePost
-	c.ShouldBind(&info)
+	if c.ShouldBind(&info) != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
+		return
+	}
 	session := sessions.Default(c)
 	info.Id = session.Get("userid").(int)
+	if info.Id == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.NotLogin})
+	}
 	allPost, err := post.QueryPostById(info)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"message": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
 		return
 	}
 	c.JSON(http.StatusOK, allPost)
@@ -104,12 +111,15 @@ func Test(c *gin.Context) {
 func SearchPostByContent(c *gin.Context) {
 	var content = post.Content{}
 	var data = make(map[string]interface{})
-	c.BindJSON(&content)
+	if c.BindJSON(&content) != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
+		return
+	}
 	result, err := post.Query(content)
 	if err != nil {
-		data["message"] = err.Error()
-	} else {
-		data["data"] = result
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
+		return
 	}
+	data["data"] = result
 	c.JSON(http.StatusOK, data)
 }

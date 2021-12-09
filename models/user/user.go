@@ -6,6 +6,7 @@ import (
 	DB "main/db"
 	Tools "main/utils"
 	"math/rand"
+	"os"
 	"strconv"
 	// DB "main/db"
 )
@@ -19,41 +20,37 @@ type User struct {
 }
 
 //用户注册
-func Register(User User) (int, bool) {
+func Register(User User) (int, error) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	User.Password = string(hash)
 	template := "Insert User Set User_Name=?,User_Password=?,User_Email=?"
 	stmt, err := DB.DB().Prepare(template)
 	if err != nil {
-		log.Print(err)
-		return -1, false
+		return -1, err
 	}
 	result, err := stmt.Exec(User.Username, User.Password, User.Email)
 	if err != nil {
-		log.Print(err)
-		return -1, false
+		return -1, err
 	}
 	id, _ := result.LastInsertId()
-	return int(id), true
+	return int(id), nil
 }
 
 //用户登录
-func Login(Username string) (int, string, bool) {
+func Login(Username string) (int, string, error) {
 	template := "Select User_Id,User_Password From User Where User_Name=?"
 	rows, err := DB.DB().Query(template, Username)
 	if err != nil {
-		log.Print(err)
-		return -1, "SQL Err!", false
+		return -1, "", err
 	}
 	var password string
 	var id int
 	rows.Next()
 	err = rows.Scan(&id, &password)
 	if err != nil {
-		log.Print(err)
-		return -1, "login default", false
+		return -1, "", err
 	}
-	return id, password, true
+	return id, password, nil
 }
 
 //记录日志
@@ -99,7 +96,11 @@ func GetUserIcon(Id int) (string, error) {
 		return "", err
 	}
 	if filename != "nil" {
-		return filename, nil
+		filepath := "./Icon/" + filename + ".jpg"
+		_, err := os.Stat(filepath)
+		if err == nil {
+			return filename, nil
+		}
 	}
 	template = `Update User Set Icon_Name=? Where User_Id=?`
 	iconName := "rand" + strconv.Itoa(rand.Int()%9+1)
