@@ -75,10 +75,10 @@ func RegisterCheck(c *gin.Context) {
 	c.ShouldBind(&userinfo)
 	Id, err := UserModels.Register(userinfo)
 	if err != nil {
+		code = Utils.RegisterDefault
+	} else {
 		code = Utils.RegisterSuccess
 		setSessionById(c, Id)
-	} else {
-		code = Utils.UserNameIsExists
 	}
 	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
 	if code == Utils.RegisterSuccess {

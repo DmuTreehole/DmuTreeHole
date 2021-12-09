@@ -18,7 +18,7 @@ const (
 	UserNameNotExists = 1002 //用户名不存在，登录时会出现
 	UserIdNotFound    = 1003 //用户ID未找到
 	RegisterSuccess   = 1010 //注册成功
-	UserNameIsExists  = 1011 //用户名已存在，注册时会出现
+	RegisterDefault  = 1011 //用户名已存在或者邮箱已经被注册，注册时会出现
 	UserIconNotFound  = 1021 //用户头像查找错误
 )
 
