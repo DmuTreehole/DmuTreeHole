@@ -44,6 +44,7 @@ func Router() {
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
 			post.POST("getpostbyId", handlers.GetPostById)
 			post.POST("search", handlers.SearchPostByContent)
+			post.POST("createfeedback",handlers.CreateOneFeedback)
 		}
 		comment := api.Group("/comment")
 		{

@@ -31,6 +31,8 @@ const (
 	RevisePostSuccess = 2020 //修改Post成功
 	DeletePostSuccess = 2030 //删除Post成功
 	DeletePostDefault = 2031 //删除Post失败
+	CreateFeedBackSuccess=2040 //创建反馈失败
+	CreateFeedBackDefault=2041 //创建反馈成功
 )
 
 //Comment相关代码
