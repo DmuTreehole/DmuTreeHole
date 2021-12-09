@@ -109,13 +109,13 @@ func Test(c *gin.Context) {
 // @Tags 树洞相关接口
 // @Router /api/post/Search [Post]
 func SearchPostByContent(c *gin.Context) {
-	var content = post.PagePost{}
+	var content = post.Content{}
 	var data = make(map[string]interface{})
 	if c.BindJSON(&content) != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
 		return
 	}
-	result, err := post.QueryPostById(content)
+	result, err := post.Query(content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
 		return
