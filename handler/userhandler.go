@@ -161,7 +161,7 @@ func setSessionById(c *gin.Context, Id int) {
 // @Produce application/json
 // @Tags 用户相关接口
 // @Params body body UserModels.User "用户请求体"
-// @Router /api/user/getusername [post]
+// @Router /api/user/getusericon [post]
 func ShowUserIcon(c *gin.Context) {
 	var user UserModels.User
 	c.ShouldBind(&user)

@@ -10,7 +10,7 @@ const (
 	BindDefault     = 200 //数据解析错误
 	DatabaseDefault = 300 //数据库发生错误
 )
-
+//但凡个位是0，都代表着成功
 //登录注册相关的代码
 const (
 	LoginSuccess      = 1000 //登录成功
