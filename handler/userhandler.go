@@ -37,7 +37,7 @@ func LoginCheck(c *gin.Context) {
 	}
 	fmt.Println(user)
 	Id, CurrentPassword, err := UserModels.Login(user.Username)
-	if err != nil {
+	if err == nil {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
 		if ok {
 			setSessionById(c, Id)
