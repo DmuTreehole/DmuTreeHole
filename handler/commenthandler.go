@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"log"
 	post "main/models/post"
 	Utils "main/utils"
 	"net/http"
@@ -28,9 +28,9 @@ func GetAllComment(c *gin.Context) {
 	//response,_:=post.ShowComment(pid.Id)
 	var comment post.Comment
 	c.ShouldBind(&comment) //Uid 和 page
-	fmt.Println(comment)
 	response, err := post.ShowComment(comment)
 	if err != nil {
+		log.Panicln(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
 		return
 	}

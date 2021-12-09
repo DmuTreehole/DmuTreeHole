@@ -19,7 +19,8 @@ type PagePost struct {
 }
 
 type view struct {
-	Id       string
+	Id       string `json:"PostId"`
+	UserId   int    `json:"UserId"`
 	Created  string `json:"created_time"`
 	Updated  string `json:"updated_time"`
 	Content  string `json:"Content"`
@@ -46,7 +47,7 @@ func CreatePost(post Post) (int64, error) {
 
 //查看树洞，采用分页查询,每次显示五条
 func ViewPost(page int) ([]view, error) {
-	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
+	template := "Select Post_Id,Created,Updated,Content,User_Name,User.User_Id From Post,User " +
 		"where Post.User_Id=User.User_Id Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, (page-1)*5) // page 从1开始
 	if err != nil {
@@ -55,7 +56,7 @@ func ViewPost(page int) ([]view, error) {
 	allpost := []view{}
 	for rows.Next() {
 		post := view{}
-		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username)
+		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username, &post.UserId)
 		if err != nil {
 			log.Print(err)
 		}

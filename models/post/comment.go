@@ -42,7 +42,7 @@ func CreateComment(comment Comment) error {
 //查看评论
 func ShowComment(comment Comment) ([]Comment_view, error) {
 	//创建更改时间，评论内容，发评论人,两表查询
-	template := "Select Created,Updated,User_Name,Content,Comment_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
+	template := "Select Created,Updated,User_Name,Content,Comment_Id,User.User_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
 	rows, err := DB.DB().Query(template, comment.Pid)
 	if err != nil {
 		return nil, err
@@ -50,12 +50,13 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 	allcomment := []Comment_view{}
 	for rows.Next() {
 		comment_view := Comment_view{}
-		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content, &comment_view.Id)
+		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content, &comment_view.Id, &comment_view.Uid)
 		if err != nil {
 			return nil, err
 		}
 		allcomment = append(allcomment, comment_view)
 	}
+	fmt.Println(allcomment)
 	return allcomment, nil
 }
 
