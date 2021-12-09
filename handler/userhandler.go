@@ -50,7 +50,10 @@ func LoginCheck(c *gin.Context) {
 	}
 	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
 	if code == Utils.LoginSuccess {
-		c.JSON(http.StatusOK, gin.H{"code": code})
+		c.JSON(http.StatusOK, gin.H{
+			"code":   code,
+			"UserId": Id,
+		})
 		return
 	}
 	c.JSON(http.StatusInternalServerError, gin.H{"code": code})
