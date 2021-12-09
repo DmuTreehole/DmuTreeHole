@@ -10,7 +10,7 @@ const (
 	BindDefault     = 200 //数据解析错误
 	DatabaseDefault = 300 //数据库发生错误
 )
-
+//但凡个位是0，都代表着成功
 //登录注册相关的代码
 const (
 	LoginSuccess      = 1000 //登录成功
@@ -18,7 +18,7 @@ const (
 	UserNameNotExists = 1002 //用户名不存在，登录时会出现
 	UserIdNotFound    = 1003 //用户ID未找到
 	RegisterSuccess   = 1010 //注册成功
-	UserNameIsExists  = 1011 //用户名已存在，注册时会出现
+	RegisterDefault  = 1011 //用户名已存在或者邮箱已经被注册，注册时会出现
 	UserIconNotFound  = 1021 //用户头像查找错误
 )
 

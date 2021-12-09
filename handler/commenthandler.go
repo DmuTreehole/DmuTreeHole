@@ -15,9 +15,9 @@ import (
 // @Success 200
 // @Accept application/json
 // @Produce application/json
-// @Param id path int true "postid"
+// @Param body body post.Comment true "评论请求体"
 // @Tags 评论相关接口
-// @Router /api/comment/getallcomment/:id [get]
+// @Router /api/comment/getallcomment [post]
 func GetAllComment(c *gin.Context) {
 	//var pid struct{
 	//	Id int `json:"id"`

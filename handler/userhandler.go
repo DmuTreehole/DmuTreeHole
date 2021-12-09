@@ -75,10 +75,10 @@ func RegisterCheck(c *gin.Context) {
 	c.ShouldBind(&userinfo)
 	Id, err := UserModels.Register(userinfo)
 	if err != nil {
+		code = Utils.RegisterDefault
+	} else {
 		code = Utils.RegisterSuccess
 		setSessionById(c, Id)
-	} else {
-		code = Utils.UserNameIsExists
 	}
 	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
 	if code == Utils.RegisterSuccess {
@@ -161,7 +161,7 @@ func setSessionById(c *gin.Context, Id int) {
 // @Produce application/json
 // @Tags 用户相关接口
 // @Params body body UserModels.User "用户请求体"
-// @Router /api/user/getusername [post]
+// @Router /api/user/getusericon [post]
 func ShowUserIcon(c *gin.Context) {
 	var user UserModels.User
 	c.ShouldBind(&user)
