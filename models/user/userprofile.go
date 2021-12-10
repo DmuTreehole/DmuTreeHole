@@ -46,6 +46,7 @@ func QueryUser(id int) (Userprofile, error) {
 	var pro Userprofile
 	template := "Select User_Id,User_Nickname,User_Sex,User_Addr from Userprofile where User_Id=?"
 	rows, err := DB.DB().Query(template, id)
+	defer rows.Close()
 	if err != nil {
 		log.Print(err)
 		return pro, err

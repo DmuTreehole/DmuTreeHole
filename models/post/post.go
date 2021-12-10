@@ -31,6 +31,7 @@ type view struct {
 func CreatePost(post Post) (int64, error) {
 	template := "Insert Post Set Created=?,User_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
+	defer stmt.Close()
 	if err != nil {
 		log.Print(err)
 	}
@@ -50,6 +51,7 @@ func ViewPost(page int) ([]view, error) {
 	template := "Select Post_Id,Created,Updated,Content,User_Name,User.User_Id From Post,User " +
 		"where Post.User_Id=User.User_Id Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, (page-1)*5) // page 从1开始
+	defer rows.Close()
 	if err != nil {
 		log.Print(err)
 	}
@@ -87,6 +89,7 @@ func QueryPostById(info PagePost) ([]view, error) {
 	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
 		"where Post.User_Id=User.User_Id And Post.User_Id = ? Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, info.Id, (info.Page-1)*5)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}

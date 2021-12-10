@@ -26,6 +26,7 @@ type Comment_view struct {
 func CreateComment(comment Comment) error {
 	template := "Insert Comment Set Created=?,User_Id=?,Post_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
+	defer stmt.Close()
 	if err != nil {
 		return err
 	}
@@ -44,6 +45,7 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 	//创建更改时间，评论内容，发评论人,两表查询
 	template := "Select Created,Updated,User_Name,Content,Comment_Id,User.User_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
 	rows, err := DB.DB().Query(template, comment.Pid)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}

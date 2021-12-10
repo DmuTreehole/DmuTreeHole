@@ -1,17 +1,21 @@
 package post
+
 import (
 	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
 )
-type Feedback struct{
+
+type Feedback struct {
 	Uid     int    `json:"UserId"`
 	Content string `json:"Content",form:"Content"`
 }
-func CreateFeedBack(feedback Feedback)(int64,error){
+
+func CreateFeedBack(feedback Feedback) (int64, error) {
 	template := "Insert Feedback Set Created=?,User_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
+	defer stmt.Close()
 	if err != nil {
 		log.Print(err)
 	}
