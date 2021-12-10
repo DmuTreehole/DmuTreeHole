@@ -8,6 +8,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "main/docs"
 	handlers "main/handler"
+	"net/http"
 )
 
 func Router() {
@@ -19,6 +20,7 @@ func Router() {
 	//r.StaticFS("/Icon",http.Dir("./Icon"))
 	api := r.Group("/api")
 	{
+		api.StaticFS("/Icon", http.Dir("./Icon"))
 		api.GET("/question", handlers.GetQuestion)
 		api.GET("/test", handlers.Test)
 		//接口层的代码书写在这
@@ -44,7 +46,7 @@ func Router() {
 			post.GET("deleteonepost/:id", handlers.DeleteOnePost)
 			post.POST("getpostbyId", handlers.GetPostById)
 			post.POST("search", handlers.SearchPostByContent)
-			post.POST("createfeedback",handlers.CreateOneFeedback)
+			post.POST("createfeedback", handlers.CreateOneFeedback)
 		}
 		comment := api.Group("/comment")
 		{

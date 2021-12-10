@@ -166,17 +166,17 @@ func setSessionById(c *gin.Context, Id int) {
 // @Params body body UserModels.User "用户请求体"
 // @Router /api/user/getusericon [post]
 func ShowUserIcon(c *gin.Context) {
-	var user UserModels.User
+	var user UserModels.IconGet
 	c.ShouldBind(&user)
-	filename, err := UserModels.GetUserIcon(user.Id)
+	fmt.Println(user)
+	icons, err := UserModels.GetUserIcon(user.UserIds)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserIconNotFound})
 		return
 	}
-	filepath := `./Icon/` + filename + `.jpg`
 	//c.Writer.Header().Add("content-Disposition", fmt.Sprintf("attachment;filename=%s", filename))
 	//c.Writer.Header().Set("content-Type","application/jpeg")
-	c.File(filepath)
+	c.JSON(http.StatusOK, icons)
 	//c.JSON(http.StatusOK,gin.H{"message":"ok"})
 }
 

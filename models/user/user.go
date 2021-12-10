@@ -6,7 +6,6 @@ import (
 	DB "main/db"
 	Tools "main/utils"
 	"math/rand"
-	"os"
 	"strconv"
 	// DB "main/db"
 )
@@ -17,6 +16,14 @@ type User struct {
 	Username string `json:"Username",form:"Username"`
 	Password string `json:"Userpassword",form:"Password"`
 	Email    string `json:"UserEmail"`
+}
+
+type Icon struct {
+	UserId int    `json:"UserId"`
+	Url    string `json:"Url"`
+}
+type IconGet struct {
+	UserIds []int `json:"UserId"`
 }
 
 //用户注册
@@ -86,27 +93,34 @@ func GetUserNameById(Id int) (string, error) {
 }
 
 //查询用户头像
-func GetUserIcon(Id int) (string, error) {
-	template := `Select Icon_Name From User Where User_Id =?`
-	rows, err := DB.DB().Query(template, Id)
-	rows.Next()
-	var filename string
-	err = rows.Scan(&filename)
-	if err != nil {
-		return "", err
-	}
-	if filename != "nil" {
-		filepath := "./Icon/" + filename + ".jpg"
-		_, err := os.Stat(filepath)
-		if err == nil {
-			return filename, nil
+func GetUserIcon(Ids []int) ([]Icon, error) {
+	template1 := `Select Icon_Name From User Where User_Id =?`
+	template2 := `Update User Set Icon_Name=? Where User_Id=?`
+	db := DB.DB()
+	var result = []Icon{}
+	var icon = Icon{}
+	for _, id := range Ids {
+		rows, err := db.Query(template1, id)
+		if err != nil {
+			return nil, err
+		}
+		rows.Next()
+		err = rows.Scan(&icon.Url)
+		if err != nil {
+			return nil, err
+		}
+		if icon.Url != "nil" {
+			icon.UserId = id
+			result = append(result, icon)
+		} else {
+			icon.Url = "/Icon/rand" + strconv.Itoa(rand.Int()%9+1) + ".jpg"
+			icon.UserId = id
+			_, err = db.Query(template2, icon.Url, id)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, icon)
 		}
 	}
-	template = `Update User Set Icon_Name=? Where User_Id=?`
-	iconName := "rand" + strconv.Itoa(rand.Int()%9+1)
-	_, err = DB.DB().Query(template, iconName, Id)
-	if err != nil {
-		return "", err
-	}
-	return iconName, nil
+	return result, nil
 }
