@@ -166,10 +166,10 @@ func setSessionById(c *gin.Context, Id int) {
 // @Params body body UserModels.User "用户请求体"
 // @Router /api/user/getusericon [post]
 func ShowUserIcon(c *gin.Context) {
-	var user UserModels.IconGet
+	var user UserModels.User
 	c.ShouldBind(&user)
 	fmt.Println(user)
-	icons, err := UserModels.GetUserIcon(user.UserIds)
+	icons, err := UserModels.GetUserIcon(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserIconNotFound})
 		return

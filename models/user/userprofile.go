@@ -27,7 +27,8 @@ func CreateUser(pro Userprofile) error {
 	//	return err
 	//}
 	//return nil
-	_, err := DB.DB().Query(template, pro.Id, pro.Nickname, pro.Sex, pro.Addr)
+	rows, err := DB.DB().Query(template, pro.Id, pro.Nickname, pro.Sex, pro.Addr)
+	defer rows.Close()
 	return err
 }
 
@@ -35,7 +36,8 @@ func CreateUser(pro Userprofile) error {
 func UpdateUser(pro Userprofile) error {
 
 	template := "UPDATE Userprofile SET User_Nickname=?,User_Sex=?,User_Addr=? Where User_Id=?"
-	_, err := DB.DB().Query(template, pro.Nickname, pro.Sex, pro.Addr, pro.Id)
+	rows, err := DB.DB().Query(template, pro.Nickname, pro.Sex, pro.Addr, pro.Id)
+	defer rows.Close()
 	//i, _ := res.LastInsertId() ?????? update 还查id?
 	//return int(i), true
 	return err

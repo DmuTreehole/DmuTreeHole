@@ -109,7 +109,8 @@ func GetUserIcon(Id int) (string, error) {
 	}
 	template = `Update User Set Icon_Name=? Where User_Id=?`
 	iconName := "rand" + strconv.Itoa(rand.Int()%9+1)
-	_, err = DB.DB().Query(template, iconName, Id)
+	rows1, err := DB.DB().Query(template, iconName, Id)
+	rows1.Close()
 	if err != nil {
 		return "", err
 	}

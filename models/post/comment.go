@@ -65,7 +65,8 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 //删除评论
 func DeleteComment(commentId int) error {
 	template := "DELETE From Comment Where Comment_Id=?"
-	_, err := DB.DB().Query(template, commentId)
+	rows, err := DB.DB().Query(template, commentId)
+	rows.Close()
 	if err != nil {
 		log.Print(err)
 		return err
