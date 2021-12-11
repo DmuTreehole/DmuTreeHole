@@ -5,6 +5,7 @@ import (
 	"github.com/go-ini/ini"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
 )
 
 var (
@@ -32,6 +33,7 @@ func init() {
 	err = dbs.Ping()
 	if err != nil {
 		log.Panic("数据库连接失败")
+		os.Exit(-1)
 	}
 }
 

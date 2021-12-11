@@ -1,7 +1,6 @@
 package post
 
 import (
-	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
@@ -34,13 +33,14 @@ func CreatePost(post Post) (int64, error) {
 	defer stmt.Close()
 	if err != nil {
 		log.Print(err)
+		return -1, err
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	fmt.Println(post)
 	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
 	if err != nil {
 		log.Print(err)
+		return -1, err
 	}
 	id, _ := result.LastInsertId()
 	return id, err
@@ -54,6 +54,7 @@ func ViewPost(page int) ([]view, error) {
 	defer rows.Close()
 	if err != nil {
 		log.Print(err)
+		return nil, err
 	}
 	allpost := []view{}
 	for rows.Next() {
@@ -61,6 +62,7 @@ func ViewPost(page int) ([]view, error) {
 		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username, &post.UserId)
 		if err != nil {
 			log.Print(err)
+			return nil, err
 		}
 		allpost = append(allpost, post)
 	}

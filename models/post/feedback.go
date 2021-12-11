@@ -1,7 +1,6 @@
 package post
 
 import (
-	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
@@ -21,7 +20,6 @@ func CreateFeedBack(feedback Feedback) (int64, error) {
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	fmt.Println(feedback)
 	result, err := stmt.Exec(created, feedback.Uid, updated, feedback.Content)
 	if err != nil {
 		log.Print(err)

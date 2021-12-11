@@ -1,7 +1,6 @@
 package post
 
 import (
-	"fmt"
 	"log"
 	DB "main/db"
 	Tools "main/utils"
@@ -32,7 +31,6 @@ func CreateComment(comment Comment) error {
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	fmt.Println(comment)
 	_, err = stmt.Exec(created, comment.Uid, comment.Pid, updated, comment.Content)
 	if err != nil {
 		return err
@@ -58,7 +56,6 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 		}
 		allcomment = append(allcomment, comment_view)
 	}
-	fmt.Println(allcomment)
 	return allcomment, nil
 }
 

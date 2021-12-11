@@ -2,7 +2,6 @@ package handler
 
 //与用户相关的处理器函数
 import (
-	"fmt"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
@@ -35,7 +34,6 @@ func LoginCheck(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindDefault})
 		return
 	}
-	fmt.Println(user)
 	Id, CurrentPassword, err := UserModels.Login(user.Username)
 	if err == nil {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
@@ -140,7 +138,6 @@ func GetUserName(c *gin.Context) {
 	c.ShouldBind(&user)
 	username, err := UserModels.GetUserNameById(user.Id)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserNameNotExists})
 		return
 	}
@@ -168,7 +165,6 @@ func setSessionById(c *gin.Context, Id int) {
 func ShowUserIcon(c *gin.Context) {
 	var user UserModels.User
 	c.ShouldBind(&user)
-	fmt.Println(user)
 	icons, err := UserModels.GetUserIcon(user.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UserIconNotFound})
