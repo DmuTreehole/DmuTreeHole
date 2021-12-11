@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"main/db"
 	"strings"
@@ -34,7 +33,6 @@ func Fuck(context string) string {
 	for rows.Next() {
 		rows.Scan(&word)
 		context = strings.ReplaceAll(context, word, changed)
-		fmt.Println(context, word)
 	}
 	return context
 }
