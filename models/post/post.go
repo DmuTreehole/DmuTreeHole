@@ -37,7 +37,7 @@ func CreatePost(post Post) (int64, error) {
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	result, err := stmt.Exec(created, post.Uid, updated, Tools.Fuck(post.Content))
+	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
 	if err != nil {
 		log.Print(err)
 		return -1, err
@@ -64,6 +64,7 @@ func ViewPost(page int) ([]view, error) {
 			log.Print(err)
 			return nil, err
 		}
+		post.Content = Tools.Fuck(post.Content)
 		allpost = append(allpost, post)
 	}
 	return allpost, nil
