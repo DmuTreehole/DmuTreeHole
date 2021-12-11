@@ -37,7 +37,7 @@ func CreatePost(post Post) (int64, error) {
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
+	result, err := stmt.Exec(created, post.Uid, updated, Tools.Fuck(post.Content))
 	if err != nil {
 		log.Print(err)
 		return -1, err

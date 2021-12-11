@@ -31,7 +31,7 @@ func CreateComment(comment Comment) error {
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	_, err = stmt.Exec(created, comment.Uid, comment.Pid, updated, comment.Content)
+	_, err = stmt.Exec(created, comment.Uid, comment.Pid, updated, Tools.Fuck(comment.Content))
 	if err != nil {
 		return err
 	}

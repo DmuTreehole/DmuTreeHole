@@ -1,0 +1,95 @@
+create table User
+(
+    User_Id       int auto_increment  primary key,
+    User_Name     varchar(100)               not null,
+    User_Password char(62)                   not null,
+    User_Email    varchar(30)                not null,
+    Icon_Name     varchar(255) default 'nil' null,
+    constraint User_Name unique (User_Name),
+    constraint User_UN unique (User_Email)
+)engine = innodb charset = utf8;
+
+create table Userprofile
+(
+    User_Id       int auto_increment primary key,
+    User_NickName varchar(30)  null,
+    User_Sex      tinyint(1)   null,
+    User_Addr     varchar(255) null,
+    constraint Userprofile_FK foreign key (User_Id) references User (User_Id)
+)engine =innodb charset = utf8;
+
+create table Baneduser
+(
+    User_Id   int auto_increment
+        primary key,
+    User_Name varchar(100) null,
+    Reason    varchar(100) not null,
+    constraint Baneduser_FK
+        foreign key (User_Id) references User (User_Id)
+)engine=innodb charset = utf8mb4;
+
+create table Post(
+    Post_Id int auto_increment primary key,
+    Created datetime     not null,
+    Updated datetime     not null,
+    User_Id int          null,
+    Content varchar(255) not null,
+    constraint Post_ibfk_1
+        foreign key (User_Id) references User (User_Id)
+)engine = innodb charset = utf8mb4;
+create index User_Id on Post (User_Id);
+create table Questions(
+    question_Id int auto_increment primary key,
+    answer1     varchar(255) charset utf8 null,
+    answer2     varchar(255) charset utf8 null,
+    answer3     varchar(255) charset utf8 null,
+    answer4     varchar(255) charset utf8 null,
+    correct     char                      null,
+    question    varchar(100)              null
+)engine = innodb charset = utf8mb4;
+
+create table Comment
+(
+    Comment_Id int auto_increment primary key,
+    Post_Id    int          null,
+    User_Id    int          null,
+    Content    varchar(255) null,
+    Created    datetime     not null,
+    Updated    datetime     not null,
+    constraint Comment_ibfk_1
+        foreign key (Post_Id) references Post (Post_Id),
+    constraint Comment_ibfk_2
+        foreign key (User_Id) references User (User_Id)
+)engine = innodb charset =utf8mb4;
+create index Post_Id on Comment (Post_Id);
+create index User_Id on Comment (User_Id);
+
+create table Feedback(
+    Feedback_id int auto_increment primary key,
+    User_Id     int          null,
+    Content     varchar(100) not null,
+    Created     datetime     not null,
+    Updated     datetime     not null,
+    constraint Feedback_FK
+    foreign key (User_Id) references User (User_Id)
+)engine = innodb charset = utf8mb4;
+
+create table Logs(
+    Log_Num  bigint auto_increment primary key,
+    User_Id  int          null,
+    Log_Time datetime     not null,
+    Log_Ip   varchar(30)  null,
+    Log_Info varchar(255) null,
+    constraint Logs_FK
+        foreign key (User_Id) references User (User_Id)
+)engine = innodb charset = utf8mb4;
+
+create table Record(
+    User_Id int not null,
+    Post_Id int not null,
+    primary key (User_Id, Post_Id),
+    constraint Record_FK
+        foreign key (User_Id) references User (User_Id),
+    constraint Record_FK_1
+        foreign key (Post_Id) references Post (Post_Id)
+)engine = innodb charset = utf8mb4;

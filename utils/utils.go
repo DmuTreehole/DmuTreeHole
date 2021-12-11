@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"main/db"
+	"strings"
 	"time"
 )
 
@@ -19,10 +22,19 @@ func CobPassWord(password string, password2 string) bool {
 }
 
 //屏蔽关键字
-//func fuck(context string) string {
-//  changed := "***"
-//  for _,word := range dictionary {
-//    strings.ReplaceAll(context,word,changed)
-//  }
-//  return context
-//}
+func Fuck(context string) string {
+	changed := "***"
+	var word string
+	template := `Select Content From Keyword`
+	rows, err := db.DB().Query(template)
+	defer rows.Close()
+	if err != nil {
+		return context
+	}
+	for rows.Next() {
+		rows.Scan(&word)
+		context = strings.ReplaceAll(context, word, changed)
+		fmt.Println(context, word)
+	}
+	return context
+}
