@@ -51,10 +51,10 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 	for rows.Next() {
 		comment_view := Comment_view{}
 		err = rows.Scan(&comment_view.Created, &comment_view.Updated, &comment_view.Username, &comment_view.Content, &comment_view.Id, &comment_view.Uid)
-		comment.Content = Tools.Fuck(comment.Content)
 		if err != nil {
 			return nil, err
 		}
+		comment_view.Content = Tools.Fuck(comment_view.Content)
 		allcomment = append(allcomment, comment_view)
 	}
 	return allcomment, nil
