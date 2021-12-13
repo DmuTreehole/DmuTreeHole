@@ -10,6 +10,7 @@ const (
 	BindDefault     = 200 //数据解析错误
 	DatabaseDefault = 300 //数据库发生错误
 )
+
 //但凡个位是0，都代表着成功
 //登录注册相关的代码
 const (
@@ -18,21 +19,24 @@ const (
 	UserNameNotExists = 1002 //用户名不存在，登录时会出现
 	UserIdNotFound    = 1003 //用户ID未找到
 	RegisterSuccess   = 1010 //注册成功
-	RegisterDefault  = 1011 //用户名已存在或者邮箱已经被注册，注册时会出现
+	RegisterDefault   = 1011 //用户名已存在或者邮箱已经被注册，注册时会出现
 	UserIconNotFound  = 1021 //用户头像查找错误
 )
 
 //Post相关代码
 const (
-	NotLogin          = 2001 //用户未登录
-	PostNotExists     = 2002 //帖子不存在
-	CreatePostSuccess = 2010 //创建Post成功
-	CreatePostDefault = 2011 //创建Post失败
-	RevisePostSuccess = 2020 //修改Post成功
-	DeletePostSuccess = 2030 //删除Post成功
-	DeletePostDefault = 2031 //删除Post失败
-	CreateFeedBackSuccess=2040 //创建反馈失败
-	CreateFeedBackDefault=2041 //创建反馈成功
+	NotLogin              = 2001 //用户未登录
+	PostNotExists         = 2002 //帖子不存在
+	CreatePostSuccess     = 2010 //创建Post成功
+	CreatePostDefault     = 2011 //创建Post失败
+	RevisePostSuccess     = 2020 //修改Post成功
+	DeletePostSuccess     = 2030 //删除Post成功
+	DeletePostDefault     = 2031 //删除Post失败
+	CreateFeedBackSuccess = 2040 //创建反馈失败
+	CreateFeedBackDefault = 2041 //创建反馈成功
+	UploadIconSuccess     = 2050 //头像上传成功
+	UploadIconDefault     = 2051 //头像保存失败
+	BindFormDefault       = 2052 //表单解析失败
 )
 
 //Comment相关代码

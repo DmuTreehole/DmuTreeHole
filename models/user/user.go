@@ -101,7 +101,7 @@ func GetUserIcon(Id int) (string, error) {
 		return "", err
 	}
 	if filename != "nil" {
-		filepath := "./Icon/" + filename + ".jpg"
+		filepath := "./Icon/" + filename
 		_, err := os.Stat(filepath)
 		if err == nil {
 			return filename, nil
@@ -115,4 +115,15 @@ func GetUserIcon(Id int) (string, error) {
 		return "", err
 	}
 	return iconName, nil
+}
+
+//更换头像
+func UpdateIcon(filename string, UserId int) error {
+	template := `Update User Set Icon_Name = ? Where User_Id = ?`
+	rows, err := DB.DB().Query(template, filename, UserId)
+	defer rows.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }

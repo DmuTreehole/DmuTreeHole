@@ -185,5 +185,17 @@ func ShowUserIcon(c *gin.Context) {
 // @Params body body UserModels.User "用户请求体"
 // @Router /api/user/getusername [post]
 func UploadUserIcon(c *gin.Context) {
-
+	file, err := c.FormFile("Icon")
+	id, _ := strconv.Atoi(c.PostForm("UserId"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.BindFormDefault})
+		return
+	}
+	err = c.SaveUploadedFile(file, "Icon/"+file.Filename)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.UploadIconDefault})
+		return
+	}
+	UserModels.UpdateIcon(file.Filename, id)
+	c.JSON(http.StatusOK, gin.H{"code": Utils.UploadIconSuccess})
 }
