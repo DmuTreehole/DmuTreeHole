@@ -41,7 +41,7 @@ func CreateComment(comment Comment) error {
 //查看评论
 func ShowComment(comment Comment) ([]Comment_view, error) {
 	//创建更改时间，评论内容，发评论人,两表查询
-	template := "Select Created,Updated,User_Name,Content,Comment_Id,User.User_Id from Comment,User Where Post_Id=? and Comment.User_Id=User.User_Id"
+	template := "Select Created,Updated,User_Name,Content,Comment_Id,User.User_Id from Comment,User Where Post_Id=? And Comment.User_Id=User.User_Id And isDelete != 'false'"
 	rows, err := DB.DB().Query(template, comment.Pid)
 	defer rows.Close()
 	if err != nil {
@@ -62,7 +62,8 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 
 //删除评论
 func DeleteComment(commentId int) error {
-	template := "DELETE From Comment Where Comment_Id=?"
+	//template := "DELETE From Comment Where Comment_Id=?"
+	template := `Update Comment Set Set isDelete = 'true', Etc = 'User Delete' Where Comment_Id = ?`
 	rows, err := DB.DB().Query(template, commentId)
 	rows.Close()
 	if err != nil {

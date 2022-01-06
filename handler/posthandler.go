@@ -45,7 +45,7 @@ func CreateOnePost(c *gin.Context) {
 		return
 	}
 	requestpost.Uid = tmp.(int)
-	_, err := post.CreatePost(requestpost)
+	err := post.CreatePost(requestpost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.CreatePostDefault})
 		return

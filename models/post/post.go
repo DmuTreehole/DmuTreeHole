@@ -27,29 +27,28 @@ type view struct {
 }
 
 //创建树洞
-func CreatePost(post Post) (int64, error) {
+func CreatePost(post Post) error {
 	template := "Insert Post Set Created=?,User_Id=?,Updated=?,Content=?"
 	stmt, err := DB.DB().Prepare(template)
 	defer stmt.Close()
 	if err != nil {
 		log.Print(err)
-		return -1, err
+		return err
 	}
 	created := Tools.GetDatetime()
 	updated := created
-	result, err := stmt.Exec(created, post.Uid, updated, post.Content)
+	_, err = stmt.Exec(created, post.Uid, updated, post.Content)
 	if err != nil {
 		log.Print(err)
-		return -1, err
+		return err
 	}
-	id, _ := result.LastInsertId()
-	return id, err
+	//id, _ := result.LastInsertId()
+	return err
 }
 
 //查看树洞，采用分页查询,每次显示五条
 func ViewPost(page int) ([]view, error) {
-	template := "Select Post_Id,Created,Updated,Content,User_Name,User.User_Id From Post,User " +
-		"where Post.User_Id=User.User_Id Order By Created Desc Limit 5 Offset ?"
+	template := "Select Post_Id,Created,Updated,Content,User_Name,User.User_Id From Post,User where Post.User_Id=User.User_Id And isDelete != 'true' Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, (page-1)*5) // page 从1开始
 	defer rows.Close()
 	if err != nil {
@@ -72,16 +71,17 @@ func ViewPost(page int) ([]view, error) {
 
 //删除树洞
 func DeletePost(post_id int) error {
-	template := "DELETE From Comment Where Post_Id=?"
+	//template := "DELETE From Comment Where Post_Id=?"
+	//rows, err := DB.DB().Query(template, post_id)
+	//defer rows.Close()
+	//if err != nil {
+	//	log.Print(err)
+	//	return err
+	//}
+	//template := "DELETE From Post Where Post_Id=?"
+	template := `Update Post Set isDelete = 'true', Etc = 'User Delete' Where Post_Id = ?`
 	rows, err := DB.DB().Query(template, post_id)
-	defer rows.Close()
-	if err != nil {
-		log.Print(err)
-		return err
-	}
-	template = "DELETE From Post Where Post_Id=?"
-	rows1, err := DB.DB().Query(template, post_id)
-	rows1.Close()
+	rows.Close()
 	if err != nil {
 		log.Print(err)
 		return err
@@ -92,7 +92,7 @@ func DeletePost(post_id int) error {
 //按userid查帖子
 func QueryPostById(info PagePost) ([]view, error) {
 	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User " +
-		"where Post.User_Id=User.User_Id And Post.User_Id = ? Order By Created Desc Limit 5 Offset ?"
+		"Where Post.User_Id=User.User_Id And Post.User_Id = ? And isDelete != 'true' Order By Created Desc Limit 5 Offset ?"
 	rows, err := DB.DB().Query(template, info.Id, (info.Page-1)*5)
 	defer rows.Close()
 	if err != nil {

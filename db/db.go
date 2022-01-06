@@ -19,7 +19,7 @@ type db struct {
 	Port     string `ini:"port"`
 	Account  string `ini:"user"`
 	PassWord string `ini:"password"`
-	Dabatase string `ini:"database"`
+	Database string `ini:"database"`
 }
 
 //初始化数据库
@@ -28,7 +28,7 @@ func init() {
 	cfg, _ := ini.Load("conf/app.ini")
 	cfg.Section("mysql").MapTo(&mysql)
 	//dsn = "root:dmutreehole@tcp(www.wonend.cn:3306)/Server"
-	dsn = mysql.Account + `:` + mysql.PassWord + `@tcp(` + mysql.SourceIP + `:` + mysql.Port + `)/` + mysql.Dabatase
+	dsn = mysql.Account + `:` + mysql.PassWord + `@tcp(` + mysql.SourceIP + `:` + mysql.Port + `)/` + mysql.Database
 	dbs, err = sql.Open("mysql", dsn)
 	err = dbs.Ping()
 	if err != nil {
