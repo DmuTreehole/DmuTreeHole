@@ -38,6 +38,7 @@ func Router() {
 			user.POST("changeuserprofile", handlers.ChangeUserProfile)
 			user.POST("getusericon", handlers.ShowUserIcon)
 			user.POST("uploadicon", handlers.UploadUserIcon)
+			user.POST("sendcode", handlers.EmailAuth)
 			// user.POST("uploadusericon",headers.UploadUserIcon)
 		}
 		post := api.Group("/post")

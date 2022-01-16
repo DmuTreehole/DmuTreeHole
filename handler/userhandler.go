@@ -2,6 +2,7 @@ package handler
 
 //与用户相关的处理器函数
 import (
+	"fmt"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
@@ -198,4 +199,18 @@ func UploadUserIcon(c *gin.Context) {
 	}
 	UserModels.UpdateIcon(file.Filename, id)
 	c.JSON(http.StatusOK, gin.H{"code": Utils.UploadIconSuccess})
+}
+
+//邮箱验证
+func EmailAuth(c *gin.Context) {
+	var email = Utils.AuthCode{}
+	c.ShouldBind(&email)
+	fmt.Println(email)
+	email.Code = `ABCDEFG`
+	err := Utils.SendCode(email.Code, email.ToEmail)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, nil)
 }
