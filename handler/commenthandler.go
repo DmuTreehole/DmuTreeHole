@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"log"
 	post "main/models/post"
 	Utils "main/utils"
 	"net/http"
@@ -30,7 +29,7 @@ func GetAllComment(c *gin.Context) {
 	c.ShouldBind(&comment) //Uid 和 page
 	response, err := post.ShowComment(comment)
 	if err != nil {
-		log.Panicln(err.Error())
+		//log.Panicln(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"code": Utils.DatabaseDefault})
 		return
 	}
@@ -78,7 +77,7 @@ func DeleteOneComment(c *gin.Context) {
 	id := c.Params.ByName("id")
 	//这里暂时采用comment id 来删除
 	cid, _ := strconv.Atoi(id)
-	if post.DeleteComment(cid) != nil {
+	if post.DeleteComment(cid, "User Delete") != nil {
 		c.JSON(400, gin.H{"code": Utils.DeleteCommentDefault})
 		return
 	}

@@ -25,10 +25,10 @@ func Register(User User) (int, error) {
 	User.Password = string(hash)
 	template := "Insert User Set User_Name=?,User_Password=?,User_Email=?"
 	stmt, err := DB.DB().Prepare(template)
-	defer stmt.Close()
 	if err != nil {
 		return -1, err
 	}
+	defer stmt.Close()
 	result, err := stmt.Exec(User.Username, User.Password, User.Email)
 	if err != nil {
 		return -1, err
@@ -41,10 +41,10 @@ func Register(User User) (int, error) {
 func Login(Username string) (int, string, error) {
 	template := "Select User_Id,User_Password From User Where User_Name=?"
 	rows, err := DB.DB().Query(template, Username)
-	defer rows.Close()
 	if err != nil {
 		return -1, "", err
 	}
+	defer rows.Close()
 	var password string
 	var id int
 	rows.Next()
@@ -55,7 +55,7 @@ func Login(Username string) (int, string, error) {
 	return id, password, nil
 }
 
-//记录日志
+//Log 记录日志 需要重构需要记录所有操作
 func Log(Id int, Ip string, Info string) bool {
 	template := "Insert Logs Set User_id=?,Log_Time=?,Log_Ip=?,Log_Info=?"
 	stmt, err := DB.DB().Prepare(template)

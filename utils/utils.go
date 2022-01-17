@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/go-ini/ini"
 	"golang.org/x/crypto/bcrypt"
 	"main/db"
 	"math/rand"
@@ -9,6 +10,24 @@ import (
 	"time"
 )
 
+type AuthCode struct {
+	ToEmail string `json:"email",form:"email"`
+	Code    string `json:"code",form:"code"`
+	GenTime time.Time
+}
+
+type mail struct {
+	user     string `ini:"user"`
+	password string `ini:"password"`
+	mailType string `ini:"type"`
+}
+
+var rootmail mail
+
+func init() {
+	cfg, _ := ini.Load("conf/app.ini")
+	cfg.Section("email").MapTo(&rootmail)
+}
 func GetDatetime() (datetime string) {
 	template := "2006-01-02 15:04:05"
 	datetime = time.Now().Format(template)
@@ -40,9 +59,9 @@ func Fuck(context string) string {
 }
 
 func SendCode(context string, email string) error {
-	user := "dmutreehole@163.com"
-	password := "DLCHYHPHXZVTIIGJ"
-	host := "smtp.163.com:25"
+	user := rootmail.user
+	password := rootmail.password
+	host := rootmail.mailType
 	to := email
 	subject := `海大树洞`
 	body := `<html><body><a>您的验证码为</a><h3>` + context + `</h3><a><br/>验证码有效期为1小时，请在1小时内完成验证<br/>如果不是您本人操作，请忽略本条邮件</a></body></html>`
@@ -51,12 +70,6 @@ func SendCode(context string, email string) error {
 		return err
 	}
 	return nil
-}
-
-type AuthCode struct {
-	ToEmail string `json:"email",form:"email"`
-	Code    string `json:"code",form:"code"`
-	GenTime time.Time
 }
 
 //SendToMail 发送邮件的函数

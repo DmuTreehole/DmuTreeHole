@@ -20,6 +20,9 @@ import (
 func GetAllPost(c *gin.Context) {
 	page, _ := strconv.Atoi(c.Param("page"))
 	response, _ := post.ViewPost(page)
+	/*
+	  未进行异常处理
+	*/
 	c.JSON(http.StatusOK, response)
 }
 
@@ -64,7 +67,7 @@ func CreateOnePost(c *gin.Context) {
 func DeleteOnePost(c *gin.Context) {
 	id := c.Params.ByName("id")
 	pid, _ := strconv.Atoi(id)
-	if err := post.DeletePost(pid); err != nil {
+	if err := post.DeletePost(pid, "User Delete"); err != nil {
 		c.JSON(400, gin.H{"code": Utils.DeletePostDefault})
 	}
 	c.JSON(200, gin.H{"code": Utils.DeletePostSuccess})

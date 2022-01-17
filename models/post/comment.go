@@ -61,10 +61,10 @@ func ShowComment(comment Comment) ([]Comment_view, error) {
 }
 
 //删除评论
-func DeleteComment(commentId int) error {
+func DeleteComment(commentId int, reason string) error {
 	//template := "DELETE From Comment Where Comment_Id=?"
-	template := `Update Comment Set Set isDelete = 'true', Etc = 'User Delete' Where Comment_Id = ?`
-	rows, err := DB.DB().Query(template, commentId)
+	template := `Update Comment Set Set isDelete = 'true', Etc = ? Where Comment_Id = ?`
+	rows, err := DB.DB().Query(template, reason, commentId)
 	rows.Close()
 	if err != nil {
 		log.Print(err)

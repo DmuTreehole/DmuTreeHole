@@ -56,8 +56,8 @@ func ViewPost(page int) ([]view, error) {
 		return nil, err
 	}
 	allpost := []view{}
+	post := view{}
 	for rows.Next() {
-		post := view{}
 		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username, &post.UserId)
 		if err != nil {
 			log.Print(err)
@@ -70,7 +70,7 @@ func ViewPost(page int) ([]view, error) {
 }
 
 //删除树洞
-func DeletePost(post_id int) error {
+func DeletePost(postId int, reason string) error {
 	//template := "DELETE From Comment Where Post_Id=?"
 	//rows, err := DB.DB().Query(template, post_id)
 	//defer rows.Close()
@@ -79,8 +79,8 @@ func DeletePost(post_id int) error {
 	//	return err
 	//}
 	//template := "DELETE From Post Where Post_Id=?"
-	template := `Update Post Set isDelete = 'true', Etc = 'User Delete' Where Post_Id = ?`
-	rows, err := DB.DB().Query(template, post_id)
+	template := `Update Post Set isDelete = 'true', Etc = ? Where Post_Id = ?`
+	rows, err := DB.DB().Query(template, reason, postId)
 	rows.Close()
 	if err != nil {
 		log.Print(err)

@@ -21,5 +21,4 @@ func GetQuestion(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, question)
 	}
-
 }
