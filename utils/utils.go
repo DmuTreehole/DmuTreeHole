@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"main/db"
+	"math/rand"
 	"net/smtp"
 	"strings"
 	"time"
@@ -45,20 +45,18 @@ func SendCode(context string, email string) error {
 	host := "smtp.163.com:25"
 	to := email
 	subject := `海大树洞`
-	body := `<html><body><h3>` + context + `</h3></body></html>`
-	fmt.Println("send email")
+	body := `<html><body><a>您的验证码为</a><h3>` + context + `</h3><a><br/>验证码有效期为1小时，请在1小时内完成验证<br/>如果不是您本人操作，请忽略本条邮件</a></body></html>`
 	err := SendToMail(user, password, host, to, subject, body, "html")
 	if err != nil {
-		fmt.Println("Send mail error!")
 		return err
 	}
-	fmt.Println("Send mail success!")
 	return nil
 }
 
 type AuthCode struct {
-	ToEmail string `json:"email"`
-	Code    string `json:"code"`
+	ToEmail string `json:"email",form:"email"`
+	Code    string `json:"code",form:"code"`
+	GenTime time.Time
 }
 
 //SendToMail 发送邮件的函数
@@ -75,4 +73,58 @@ func SendToMail(user, password, host, to, subject, body, mailType string) error 
 	sendTo := strings.Split(to, ";")
 	err := smtp.SendMail(host, auth, user, sendTo, msg)
 	return err
+}
+
+//获取六位随机验证码
+func GenVerCode() (string, time.Time) {
+	result := ""
+	directory := `0123456789ABCDEFGHJKLMNPQRSTUVWXYZ`
+	for i := 0; i < 6; i++ {
+		a := rand.Int() % 34
+		result += directory[a : a+1]
+	}
+	return result, time.Now()
+}
+func AuthCodeRegister(email AuthCode) error {
+	template := `Select * from AuthCode Where email=?`
+	rows, err := db.DB().Query(template, email.ToEmail)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	if rows.Next() {
+		template = `Update AuthCode Set code = ?,time=? Where email =?`
+		rows, err = db.DB().Query(template, email.Code, email.GenTime, email.ToEmail)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+	} else {
+		template = `Insert into AuthCode Set email=?,code=?,time=?`
+		rows, err = db.DB().Query(template, email.ToEmail, email.Code, email.GenTime)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+	}
+	return nil
+}
+
+func AuthCodeCheck(email AuthCode) (bool, error) {
+	template := `Select code,time from AuthCode Where email=?`
+	rows, err := db.DB().Query(template, email.ToEmail)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return false, nil
+	}
+	current := new(AuthCode)
+	rows.Scan(&current.Code, &current.GenTime)
+	if email.Code == current.Code {
+		return time.Now().Sub(current.GenTime).Hours() > 1, nil
+	} else {
+		return false, nil
+	}
 }
