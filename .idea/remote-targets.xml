@@ -2,7 +2,7 @@
 <project version="4">
   <component name="RemoteTargetsManager">
     <targets>
-      <target name="root@www.wonend.cn:22" type="ssh/sftp">
+      <target name="root@www.wonend.cn:22" type="ssh/sftp" uuid="f25845d5-65e0-4b81-8f72-eff254572646">
         <config>
           <option name="projectRootOnTarget" value="/home/gopath" />
           <option name="serverName" value="root@www.wonend.cn:22 password" />
@@ -13,6 +13,19 @@
             <option name="goPath" value="/root/go" />
             <option name="goRoot" value="/usr/local/go/bin/go" />
             <option name="goVersion" value="go1.17.2 linux/amd64" />
+          </config>
+        </ContributedStateBase>
+      </target>
+      <target name="WSL - Ubuntu-20.04" type="wsl" uuid="930bcd6d-809a-4705-a5c5-7902c18b196b">
+        <config>
+          <option name="distributionMsId" value="Ubuntu-20.04" />
+          <option name="projectRootOnTarget" value="/mnt/e/Jet Barins/apps/Goland/ch-0/213.6777.51/jbr/bin&#10;/DmuTreeHole" />
+        </config>
+        <ContributedStateBase type="GoLanguageRuntime">
+          <config>
+            <option name="goPath" value="/mnt/c/Users/MrLeea/Desktop/CentOS/Project/Go" />
+            <option name="goRoot" value="/usr/local/go/bin/go" />
+            <option name="goVersion" value="go1.17.6 linux/amd64" />
           </config>
         </ContributedStateBase>
       </target>

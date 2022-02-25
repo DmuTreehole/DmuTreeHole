@@ -2,6 +2,7 @@ package handler
 
 //与用户相关的处理器函数
 import (
+	"main/middleware"
 	UserModels "main/models/user"
 	Utils "main/utils"
 	"net/http"
@@ -38,7 +39,7 @@ func LoginCheck(c *gin.Context) {
 	if err == nil {
 		ok := Utils.CobPassWord(user.Password, CurrentPassword)
 		if ok {
-			setSessionById(c, Id)
+			c.Header("token", middleware.CreateToken(Id))
 			code = Utils.LoginSuccess
 		} else {
 			code = Utils.PasswordWrong
@@ -46,7 +47,6 @@ func LoginCheck(c *gin.Context) {
 	} else {
 		code = Utils.UserNameNotExists
 	}
-	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
 	if code == Utils.LoginSuccess {
 		c.JSON(http.StatusOK, gin.H{
 			"code":   code,
@@ -79,9 +79,8 @@ func RegisterCheck(c *gin.Context) {
 		code = Utils.RegisterDefault
 	} else {
 		code = Utils.RegisterSuccess
-		setSessionById(c, Id)
+		c.Header("token", middleware.CreateToken(Id))
 	}
-	UserModels.Log(Id, c.ClientIP(), strconv.Itoa(code))
 	if code == Utils.RegisterSuccess {
 		c.JSON(http.StatusOK, gin.H{"code": code})
 		return
@@ -144,15 +143,15 @@ func GetUserName(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"username": username})
 }
 
-func setSessionById(c *gin.Context, Id int) {
-	session := sessions.Default(c)
-	session.Options(sessions.Options{
-		MaxAge: 60 * 60 * 24 * 30 * 3, //3month
-		Path:   "/",
-	})
-	session.Set("userid", Id)
-	session.Save()
-}
+//func setSessionById(c *gin.Context, Id int) {
+//	session := sessions.Default(c)
+//	session.Options(sessions.Options{
+//		MaxAge: 60 * 60 * 24 * 30 * 3, //3month
+//		Path:   "/",
+//	})
+//	session.Set("userid", Id)
+//	session.Save()
+//}
 
 // @Summary 获取用户头像
 // @Description 获取用户头像

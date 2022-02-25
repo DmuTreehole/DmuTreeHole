@@ -1,33 +1,33 @@
 package post
 
 import (
+	"fmt"
+	"log"
 	"main/db"
-	"strings"
 )
 
 type Content struct {
 	Content string `json:"Content"`
-	Page    int    `json:"Page"`
 }
 
 func Query(Content Content) ([]view, error) {
-	Content.Content = strings.ToUpper(Content.Content)
-	Content.Content = `%` + Content.Content + `%`
-	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User" +
-		" Where Post.User_Id = User.User_Id And Upper(Content) Like ? And isDelete <> 'false' Order By Created Desc"
+	// 减少使用 !=
+	template := "Select Post_Id,Created,Updated,Content,User_Name From Post,User where Post.User_Id=User.User_Id And isDelete == 'false'And Match(Content) Against(?) Order By Created Desc"
 	rows, err := db.DB().Query(template, Content.Content)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
-	var allpost = []view{}
+	var allPost = []view{}
 	var post = view{}
 	for rows.Next() {
 		err = rows.Scan(&post.Id, &post.Created, &post.Updated, &post.Content, &post.Username)
+		fmt.Println(post)
 		if err != nil {
+			log.Fatalln(err)
 			continue
 		}
-		allpost = append(allpost, post)
+		allPost = append(allPost, post)
 	}
-	return allpost, nil
+	return allPost, nil
 }

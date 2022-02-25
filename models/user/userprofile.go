@@ -46,7 +46,7 @@ func UpdateUser(pro Userprofile) error {
 // 通过id 查询信息
 func QueryUser(id int) (Userprofile, error) {
 	var pro Userprofile
-	template := "Select User_Id,User_Nickname,User_Sex,User_Addr from Userprofile where User_Id=?"
+	template := "Select User_Id,User_Nickname,User_Sex,User_Addr from Userprofile where User_Id=? Limit 1"
 	rows, err := DB.DB().Query(template, id)
 	defer rows.Close()
 	if err != nil {

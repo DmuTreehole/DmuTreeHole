@@ -12,7 +12,7 @@ type Baned struct {
 
 //通过树洞删除对应的用户
 func BanUserByPostid(pid int, reason string) (int, bool) {
-	template := "select User_Id,User_Name from Post,User where Post_Id=? and User.User_Id=Post.User_Id"
+	template := "select User_Id,User_Name from Post,User where Post_Id=? and User.User_Id=Post.User_Id Limit 1"
 	rows, err := DB.DB().Query(template, pid)
 	defer rows.Close()
 	if err != nil {

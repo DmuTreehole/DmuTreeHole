@@ -1,21 +1,20 @@
 package router
 
 import (
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "main/docs"
 	handlers "main/handler"
+	"main/middleware"
 	"net/http"
 )
 
 func Router() {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = "/api"
-	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("session", store))
+	//store := cookie.NewStore([]byte("secret"))
+	//r.Use(sessions.Sessions("session", store))
 	r.LoadHTMLGlob("templates/*.html")
 	//r.StaticFS("/Icon",http.Dir("./Icon"))
 	api := r.Group("/api")
@@ -32,17 +31,19 @@ func Router() {
 			user.POST("login", handlers.LoginCheck)
 			user.POST("register", handlers.RegisterCheck)
 			user.POST("banusers", handlers.BanUsers)
-			user.POST("getusername", handlers.GetUserName)
-			user.POST("createuserprofile", handlers.CreateUserProfile)
-			user.POST("showuserprofile", handlers.ShowUserProfile)
-			user.POST("changeuserprofile", handlers.ChangeUserProfile)
 			user.POST("getusericon", handlers.ShowUserIcon)
-			user.POST("uploadicon", handlers.UploadUserIcon)
-			user.POST("sendcode", handlers.EmailAuth)
-			user.POST("checkcode", handlers.EmailCheck)
-			// user.POST("uploadusericon",headers.UploadUserIcon)
+			user.POST("getusername", handlers.GetUserName)
+			api.Group("", middleware.JWT())
+			{
+				user.POST("createuserprofile", handlers.CreateUserProfile)
+				user.POST("showuserprofile", handlers.ShowUserProfile)
+				user.POST("changeuserprofile", handlers.ChangeUserProfile)
+				user.POST("uploadicon", handlers.UploadUserIcon)
+				user.POST("sendcode", handlers.EmailAuth)
+				user.POST("checkcode", handlers.EmailCheck)
+			}
 		}
-		post := api.Group("/post")
+		post := api.Group("/post", middleware.JWT())
 		{
 			post.GET("getallpost/:page", handlers.GetAllPost)
 			post.POST("createonepost", handlers.CreateOnePost)
@@ -51,7 +52,7 @@ func Router() {
 			post.POST("search", handlers.SearchPostByContent)
 			post.POST("createfeedback", handlers.CreateOneFeedback)
 		}
-		comment := api.Group("/comment")
+		comment := api.Group("/comment", middleware.JWT())
 		{
 			comment.POST("getallcomment", handlers.GetAllComment)
 			comment.POST("createonecomment", handlers.CreateOneComment)
@@ -61,3 +62,24 @@ func Router() {
 	r.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.Run(":8081")
 }
+
+/*
+┏┛┻━━━━━┛┻┓
+┃｜｜｜｜｜|┃
+┃　　　━　  ┃
+┃　┳┛ 　┗┳ ┃
+┃　　　　　 ┃
+┃　　　┻　　┃
+┃　　　　　 ┃
+┗━┓　　　┏━┛
+　┃　代　┃
+　┃　码　┃
+　┃　之　┃
+　┃　神　┃
+　┃　　　┗━━━━━┓
+　┃  No Error ┣┓
+　┃  No Bug   ┃
+　┗┓┓┏━┳┓┏━━━━┛
+　 ┃┫┫ ┃┫┫
+ 　┗┻┛ ┗┻┛
+*/

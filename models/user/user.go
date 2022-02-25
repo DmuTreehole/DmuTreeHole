@@ -2,9 +2,7 @@ package user
 
 import (
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	DB "main/db"
-	Tools "main/utils"
 	"math/rand"
 	"os"
 	"strconv"
@@ -39,7 +37,7 @@ func Register(User User) (int, error) {
 
 //用户登录
 func Login(Username string) (int, string, error) {
-	template := "Select User_Id,User_Password From User Where User_Name=?"
+	template := "Select User_Id,User_Password From User Where User_Name=? Limit 1"
 	rows, err := DB.DB().Query(template, Username)
 	if err != nil {
 		return -1, "", err
@@ -55,26 +53,9 @@ func Login(Username string) (int, string, error) {
 	return id, password, nil
 }
 
-//Log 记录日志 需要重构需要记录所有操作
-func Log(Id int, Ip string, Info string) bool {
-	template := "Insert Logs Set User_id=?,Log_Time=?,Log_Ip=?,Log_Info=?"
-	stmt, err := DB.DB().Prepare(template)
-	defer stmt.Close()
-	if err != nil {
-		return false
-	}
-	logTime := Tools.GetDatetime()
-	_, err = stmt.Exec(Id, logTime, Ip, Info)
-	if err != nil {
-		log.Print(err)
-		return false
-	}
-	return true
-}
-
 //通过userID获取UserName
 func GetUserNameById(Id int) (string, error) {
-	template := "Select User_Name From User Where User_Id = ?"
+	template := "Select User_Name From User Where User_Id = ? Limit 1"
 	rows, err := DB.DB().Query(template, Id)
 	defer rows.Close()
 	if err != nil {
@@ -91,7 +72,7 @@ func GetUserNameById(Id int) (string, error) {
 
 //查询用户头像
 func GetUserIcon(Id int) (string, error) {
-	template := `Select Icon_Name From User Where User_Id =?`
+	template := `Select Icon_Name From User Where User_Id =? limit 1`
 	rows, err := DB.DB().Query(template, Id)
 	defer rows.Close()
 	rows.Next()
